@@ -3,29 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/entities/location_snapshot.dart';
-import '../../data/datasources/android_location_datasource.dart';
-import '../../platform/channels/method_channel_service.dart';
-import '../../platform/channels/event_channel_service.dart';
-
-// Provider for MethodChannelService
-final methodChannelServiceProvider = Provider<MethodChannelService>((ref) {
-  return MethodChannelService();
-});
-
-// Provider for EventChannelService
-final eventChannelServiceProvider = Provider<EventChannelService>((ref) {
-  return EventChannelService();
-});
-
-// Provider for AndroidLocationDataSource
-final androidLocationDataSourceProvider = Provider<AndroidLocationDataSource>((ref) {
-  final methodChannel = ref.watch(methodChannelServiceProvider);
-  final eventChannel = ref.watch(eventChannelServiceProvider);
-  return AndroidLocationDataSource(
-    methodChannel: methodChannel,
-    eventChannel: eventChannel,
-  );
-});
+import 'providers.dart';
 
 // Location State
 class LocationState {

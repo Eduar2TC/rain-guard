@@ -4,7 +4,7 @@ import '../../domain/entities/geo_point.dart';
 import '../../domain/entities/weather_snapshot.dart';
 import '../../domain/entities/precipitation_forecast.dart';
 import '../../domain/repositories/weather_repository.dart';
-import '../../enums/network_state.dart';
+import '../../domain/enums/network_state.dart';
 import '../datasources/weather_data_source.dart';
 import '../datasources/local_storage_data_source.dart';
 import '../datasources/network_data_source.dart';

@@ -14,6 +14,9 @@ import '../widgets/monitoring_toggle.dart';
 import '../widgets/bubble_preview.dart';
 import '../widgets/battery_status_card.dart';
 import 'debug_screen.dart';
+import 'settings_screen.dart';
+import 'history_screen.dart';
+import 'about_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -43,26 +46,41 @@ class HomeScreen extends ConsumerWidget {
                           fontWeight: FontWeight.bold,
                         ),
                   ),
-                  Row(
-                    children: [
-                      // Debug button (hidden in release)
-                      IconButton(
-                        icon: const Icon(Icons.bug_report, size: 20),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const DebugScreen(),
-                            ),
-                          );
-                        },
-                        tooltip: 'Debug',
+                  PopupMenuButton<String>(
+                    onSelected: (value) => _handleMenuTap(context, value),
+                    itemBuilder: (context) => [
+                      const PopupMenuItem(
+                        value: 'settings',
+                        child: ListTile(
+                          leading: Icon(Icons.settings),
+                          title: Text('Configuración'),
+                          contentPadding: EdgeInsets.zero,
+                        ),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.settings),
-                        onPressed: () {
-                          // TODO: Navigate to settings
-                        },
+                      const PopupMenuItem(
+                        value: 'history',
+                        child: ListTile(
+                          leading: Icon(Icons.history),
+                          title: Text('Historial'),
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'debug',
+                        child: ListTile(
+                          leading: Icon(Icons.bug_report),
+                          title: Text('Debug'),
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
+                      const PopupMenuDivider(),
+                      const PopupMenuItem(
+                        value: 'about',
+                        child: ListTile(
+                          leading: Icon(Icons.info_outline),
+                          title: Text('Acerca de'),
+                          contentPadding: EdgeInsets.zero,
+                        ),
                       ),
                     ],
                   ),
@@ -157,6 +175,35 @@ class HomeScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  void _handleMenuTap(BuildContext context, String value) {
+    switch (value) {
+      case 'settings':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const SettingsScreen()),
+        );
+        break;
+      case 'history':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const HistoryScreen()),
+        );
+        break;
+      case 'debug':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const DebugScreen()),
+        );
+        break;
+      case 'about':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const AboutScreen()),
+        );
+        break;
+    }
   }
 
   Color _getAlertColor(RainRiskState state) {

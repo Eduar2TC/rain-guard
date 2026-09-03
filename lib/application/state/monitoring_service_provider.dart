@@ -7,23 +7,12 @@ import '../../domain/entities/weather_snapshot.dart';
 import '../../domain/entities/precipitation_forecast.dart';
 import '../../domain/entities/rain_arrival_prediction.dart';
 import '../../domain/enums/rain_risk_state.dart';
-import '../../platform/channels/method_channel_service.dart';
-import '../../platform/channels/event_channel_service.dart';
+import '../state/providers.dart';
 import '../state/location_state_provider.dart';
 import '../state/weather_state_provider.dart';
 import '../state/prediction_state_provider.dart';
 import '../state/alert_state_provider.dart';
 import '../../domain/services/monitoring_scheduler.dart';
-
-// Provider for MethodChannelService
-final methodChannelServiceProvider = Provider<MethodChannelService>((ref) {
-  return MethodChannelService();
-});
-
-// Provider for EventChannelService
-final eventChannelServiceProvider = Provider<EventChannelService>((ref) {
-  return EventChannelService();
-});
 
 // Monitoring State
 class MonitoringServiceState {

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RainGuard</string>
+    <string name="monitoring_active">RainGuard activo</string>
+    <string name="monitoring_paused">RainGuard pausado</string>
+    <string name="rain_alert">Alerta de lluvia</string>
+    <string name="start_monitoring">INICIAR MONITOREO</string>
+    <string name="stop_monitoring">DETENER MONITOREO</string>
+    <string name="pause">Pausar</string>
+    <string name="resume">Reanudar</string>
+    <string name="bubble_flotante">Burbuja flotante</string>
+    <string name="settings">Configuración</string>
+    <string name="debug">Depuración</string>
+    <string name="history">Historial</string>
+    <string name="about">Acerca de</string>
+</resources>

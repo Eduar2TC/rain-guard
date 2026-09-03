@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../platform/channels/method_channel_service.dart';
+import 'providers.dart';
 
 // Battery State
 class BatteryState {
@@ -12,8 +13,6 @@ class BatteryState {
   final String chargingSource;
   final bool isPowerSaveMode;
   final bool isIgnoringBatteryOptimizations;
-  final bool isLowBattery;
-  final bool isCriticalBattery;
 
   const BatteryState({
     this.level = 100,

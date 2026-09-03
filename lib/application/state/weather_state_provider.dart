@@ -9,9 +9,8 @@ import '../../domain/enums/network_state.dart';
 import '../../domain/repositories/weather_repository.dart';
 import '../../data/datasources/weather_data_source.dart';
 import '../../data/datasources/local_storage_data_source.dart';
-import '../../data/datasources/network_data_source.dart';
 import '../../data/repositories/weather_repository_impl.dart';
-import '../../platform/channels/method_channel_service.dart';
+import 'providers.dart';
 
 // Providers for data sources
 final weatherDataSourceProvider = Provider<WeatherDataSource>((ref) {
@@ -20,10 +19,6 @@ final weatherDataSourceProvider = Provider<WeatherDataSource>((ref) {
 
 final localStorageDataSourceProvider = Provider<LocalStorageDataSource>((ref) {
   return LocalStorageDataSource();
-});
-
-final networkDataSourceProvider = Provider<NetworkDataSource>((ref) {
-  return NetworkDataSource();
 });
 
 // Provider for WeatherRepository

@@ -6,6 +6,8 @@ import '../../domain/entities/rain_arrival_prediction.dart';
 import '../../domain/entities/monitoring_state.dart';
 import '../../domain/entities/alert_decision.dart';
 import '../../domain/entities/rain_event.dart';
+import '../../domain/entities/geo_point.dart';
+import '../../domain/entities/weather_snapshot.dart';
 import '../../domain/enums/rain_risk_state.dart';
 import '../../domain/services/alert_engine.dart';
 import '../../domain/services/rain_event_detector.dart';
@@ -159,6 +161,14 @@ class AlertStateNotifier extends StateNotifier<AlertState> {
   void toggleAlerts() {
     state = state.copyWith(
       alertsEnabled: !state.alertsEnabled,
+    );
+  }
+
+  void clearHistory() {
+    _eventDetector.reset();
+    state = state.copyWith(
+      eventHistory: [],
+      activeEvent: null,
     );
   }
 

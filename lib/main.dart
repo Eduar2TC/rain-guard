@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'presentation/screens/home_screen.dart';
+import 'presentation/screens/onboarding_screen.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  final onboardingComplete = prefs.getBool('onboarding_complete') ?? false;
+
   runApp(
-    const ProviderScope(
-      child: RainGuardApp(),
+    ProviderScope(
+      child: RainGuardApp(onboardingComplete: onboardingComplete),
     ),
   );
 }
 
 class RainGuardApp extends StatelessWidget {
-  const RainGuardApp({super.key});
+  final bool onboardingComplete;
+
+  const RainGuardApp({super.key, required this.onboardingComplete});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +38,7 @@ class RainGuardApp extends StatelessWidget {
         brightness: Brightness.dark,
       ),
       themeMode: ThemeMode.system,
-      home: const HomeScreen(),
+      home: onboardingComplete ? const HomeScreen() : const OnboardingScreen(),
     );
   }
 }

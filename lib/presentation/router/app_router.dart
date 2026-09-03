@@ -1,0 +1,42 @@
+import 'package:flutter/material.dart';
+
+import '../screens/home_screen.dart';
+import '../screens/settings_screen.dart';
+import '../screens/history_screen.dart';
+import '../screens/debug_screen.dart';
+import '../screens/about_screen.dart';
+import '../screens/onboarding_screen.dart';
+
+class AppRouter {
+  static const String home = '/';
+  static const String settings = '/settings';
+  static const String history = '/history';
+  static const String debug = '/debug';
+  static const String about = '/about';
+  static const String onboarding = '/onboarding';
+
+  static Route<dynamic> generateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case home:
+        return MaterialPageRoute(builder: (_) => const HomeScreen());
+      case settings:
+        return MaterialPageRoute(builder: (_) => const SettingsScreen());
+      case history:
+        return MaterialPageRoute(builder: (_) => const HistoryScreen());
+      case debug:
+        return MaterialPageRoute(builder: (_) => const DebugScreen());
+      case about:
+        return MaterialPageRoute(builder: (_) => const AboutScreen());
+      case onboarding:
+        return MaterialPageRoute(builder: (_) => const OnboardingScreen());
+      default:
+        return MaterialPageRoute(
+          builder: (_) => Scaffold(
+            body: Center(
+              child: Text('No route defined for ${settings.name}'),
+            ),
+          ),
+        );
+    }
+  }
+}
