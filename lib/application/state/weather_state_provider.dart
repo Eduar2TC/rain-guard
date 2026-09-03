@@ -102,16 +102,8 @@ class WeatherStateNotifier extends StateNotifier<WeatherState> {
   }
 
   Future<void> _init() async {
-    // Load cached data on init
-    final cachedWeather = await _repository.getCurrentWeather(
-      const GeoPoint(latitude: 0, longitude: 0), // Will be updated with actual location
-    );
-    if (cachedWeather != null) {
-      state = state.copyWith(
-        currentWeather: cachedWeather,
-        lastUpdate: cachedWeather.timestamp,
-      );
-    }
+    // Don't fetch on init - wait for actual location from monitoring service
+    // The monitoring service will call fetchWeather() with real coordinates
   }
 
   Future<void> fetchWeather(GeoPoint location) async {

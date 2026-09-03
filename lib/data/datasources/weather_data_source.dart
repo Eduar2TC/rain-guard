@@ -68,23 +68,28 @@ class WeatherDataSource {
       if (minutely15 == null) return null;
 
       final precipitationData = minutely15['precipitation'] as List?;
-      if (precipitationData == null) return null;
+      final timeData = minutely15['time'] as List?;
+      if (precipitationData == null || timeData == null) return null;
 
       final intervals = <PrecipitationInterval>[];
       final now = DateTime.now();
 
-      // Open-Meteo returns 15-minute intervals starting from midnight
-      // We need to find the current interval and get the next ones
-      for (int i = 0; i < precipitationData.length && i < 16; i++) {
-        final precipitation = (precipitationData[i] as num?)?.toDouble() ?? 0.0;
-        final intervalTime = now.add(Duration(minutes: i * 15));
+      // Open-Meteo returns 15-minute intervals with actual timestamps
+      // Filter to only include future intervals within the next 2 hours
+      for (int i = 0; i < precipitationData.length; i++) {
+        final intervalTime = DateTime.parse(timeData[i] as String);
 
-        intervals.add(PrecipitationInterval(
-          time: intervalTime,
-          precipitation: precipitation,
-          rain: precipitation, // Approximate
-          showers: precipitation > 0 ? precipitation * 0.5 : 0,
-        ));
+        // Only include future intervals within the next 2 hours
+        if (intervalTime.isAfter(now) && intervalTime.difference(now).inMinutes <= 120) {
+          final precipitation = (precipitationData[i] as num?)?.toDouble() ?? 0.0;
+
+          intervals.add(PrecipitationInterval(
+            time: intervalTime,
+            precipitation: precipitation,
+            rain: precipitation, // Approximate
+            showers: precipitation > 0 ? precipitation * 0.5 : 0,
+          ));
+        }
       }
 
       return PrecipitationForecast(

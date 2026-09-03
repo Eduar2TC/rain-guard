@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/logging/app_logger.dart';
-import '../../platform/channels/method_channel_service.dart';
 import '../state/location_state_provider.dart';
 import '../state/weather_state_provider.dart';
 import '../state/prediction_state_provider.dart';
