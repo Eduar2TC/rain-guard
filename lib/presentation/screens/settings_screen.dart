@@ -1,57 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../application/state/bubble_state_provider.dart';
-import '../../application/state/alert_state_provider.dart';
+import '../../application/state/settings_state_provider.dart';
 import '../../domain/enums/monitoring_mode.dart';
 
-class SettingsScreen extends ConsumerStatefulWidget {
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
-  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsStateProvider);
 
-class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  bool _bubbleEnabled = true;
-  MonitoringMode _monitoringMode = MonitoringMode.full;
-  bool _alertsEnabled = true;
-  double _pollingInterval = 5.0;
-  bool _soundEnabled = true;
-  bool _vibrationEnabled = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadSettings();
-  }
-
-  Future<void> _loadSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _bubbleEnabled = prefs.getBool('bubble_enabled') ?? true;
-      _monitoringMode = MonitoringMode.values[prefs.getInt('monitoring_mode') ?? 3];
-      _alertsEnabled = prefs.getBool('alerts_enabled') ?? true;
-      _pollingInterval = prefs.getDouble('polling_interval') ?? 5.0;
-      _soundEnabled = prefs.getBool('sound_enabled') ?? true;
-      _vibrationEnabled = prefs.getBool('vibration_enabled') ?? true;
-    });
-  }
-
-  Future<void> _saveSetting(String key, dynamic value) async {
-    final prefs = await SharedPreferences.getInstance();
-    if (value is bool) {
-      await prefs.setBool(key, value);
-    } else if (value is int) {
-      await prefs.setInt(key, value);
-    } else if (value is double) {
-      await prefs.setDouble(key, value);
+    if (!settings.isLoaded) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Configuración'),
@@ -63,38 +28,31 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           SwitchListTile(
             title: const Text('Alertas activadas'),
             subtitle: const Text('Recibir notificaciones de lluvia'),
-            value: _alertsEnabled,
+            value: settings.alertsEnabled,
             onChanged: (value) {
-              setState(() {
-                _alertsEnabled = value;
-              });
-              _saveSetting('alerts_enabled', value);
-              ref.read(alertStateProvider.notifier).toggleAlerts();
+              ref.read(settingsStateProvider.notifier).setAlertsEnabled(value);
             },
           ),
           ListTile(
             title: const Text('Modo de alerta'),
-            subtitle: Text(_monitoringMode.displayName),
+            subtitle: Text(settings.monitoringMode.displayName),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => _showMonitoringModeDialog(),
+            onTap: () => _showMonitoringModeDialog(context, ref, settings),
           ),
           Slider(
-            value: _pollingInterval,
+            value: settings.pollingInterval,
             min: 1,
             max: 10,
             divisions: 9,
-            label: '${_pollingInterval.toStringAsFixed(0)} min',
+            label: '${settings.pollingInterval.toStringAsFixed(0)} min',
             onChanged: (value) {
-              setState(() {
-                _pollingInterval = value;
-              });
-              _saveSetting('polling_interval', value);
+              ref.read(settingsStateProvider.notifier).setPollingInterval(value);
             },
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              'Intervalo de actualización: ${_pollingInterval.toStringAsFixed(0)} minutos',
+              'Intervalo de actualización: ${settings.pollingInterval.toStringAsFixed(0)} minutos',
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
@@ -106,17 +64,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           SwitchListTile(
             title: const Text('Mostrar burbuja'),
             subtitle: const Text('Icono flotante sobre otras apps'),
-            value: _bubbleEnabled,
+            value: settings.bubbleEnabled,
             onChanged: (value) {
-              setState(() {
-                _bubbleEnabled = value;
-              });
-              _saveSetting('bubble_enabled', value);
-              if (value) {
-                ref.read(bubbleStateProvider.notifier).show();
-              } else {
-                ref.read(bubbleStateProvider.notifier).hide();
-              }
+              ref.read(settingsStateProvider.notifier).setBubbleEnabled(value);
             },
           ),
 
@@ -127,23 +77,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           SwitchListTile(
             title: const Text('Sonido'),
             subtitle: const Text('Reproducir sonido en alertas'),
-            value: _soundEnabled,
+            value: settings.soundEnabled,
             onChanged: (value) {
-              setState(() {
-                _soundEnabled = value;
-              });
-              _saveSetting('sound_enabled', value);
+              ref.read(settingsStateProvider.notifier).setSoundEnabled(value);
             },
           ),
           SwitchListTile(
             title: const Text('Vibración'),
             subtitle: const Text('Vibrar en alertas'),
-            value: _vibrationEnabled,
+            value: settings.vibrationEnabled,
             onChanged: (value) {
-              setState(() {
-                _vibrationEnabled = value;
-              });
-              _saveSetting('vibration_enabled', value);
+              ref.read(settingsStateProvider.notifier).setVibrationEnabled(value);
             },
           ),
 
@@ -172,13 +116,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         style: TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.bold,
-          color: Theme.of(context).primaryColor,
+          color: Colors.blue,
         ),
       ),
     );
   }
 
-  void _showMonitoringModeDialog() {
+  void _showMonitoringModeDialog(
+    BuildContext context,
+    WidgetRef ref,
+    SettingsState settings,
+  ) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -189,12 +137,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             return RadioListTile<MonitoringMode>(
               title: Text(mode.displayName),
               value: mode,
-              groupValue: _monitoringMode,
+              groupValue: settings.monitoringMode,
               onChanged: (value) {
-                setState(() {
-                  _monitoringMode = value!;
-                });
-                _saveSetting('monitoring_mode', value!.index);
+                if (value != null) {
+                  ref.read(settingsStateProvider.notifier).setMonitoringMode(value);
+                }
                 Navigator.pop(context);
               },
             );
