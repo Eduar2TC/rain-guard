@@ -1,0 +1,154 @@
+import '../../entities/location_snapshot.dart';
+import '../../entities/weather_snapshot.dart';
+import '../../entities/precipitation_forecast.dart';
+import '../../entities/rain_arrival_prediction.dart';
+import '../../entities/geo_point.dart';
+import '../../enums/rain_risk_state.dart';
+import '../../enums/rain_intensity.dart';
+import '../../enums/prediction_confidence.dart';
+import '../../core/constants/alert_thresholds.dart';
+import 'precipitation_analyzer.dart';
+
+class RainArrivalPredictor {
+  final PrecipitationAnalyzer _analyzer;
+
+  RainArrivalPredictor({PrecipitationAnalyzer? analyzer})
+      : _analyzer = analyzer ?? PrecipitationAnalyzer();
+
+  RainArrivalPrediction predict({
+    required LocationSnapshot location,
+    required WeatherSnapshot weather,
+    required PrecipitationForecast forecast,
+  }) {
+    final analysis = _analyzer.analyze(
+      weather: weather,
+      forecast: forecast,
+    );
+
+    // If currently raining, return immediate state
+    if (analysis.isRaining && analysis.currentPrecipitation > AlertThresholds.lightRain) {
+      return RainArrivalPrediction(
+        state: RainRiskState.raining,
+        eta: Duration.zero,
+        distanceMeters: 0,
+        intensity: analysis.currentIntensity,
+        confidence: PredictionConfidence.high,
+        source: 'current_observation',
+        timestamp: DateTime.now(),
+      );
+    }
+
+    // Calculate ETA from forecast
+    final eta = _calculateEta(
+      location: location,
+      weather: weather,
+      forecast: forecast,
+      analysis: analysis,
+    );
+
+    // Determine risk state based on ETA
+    final state = _determineState(eta, analysis);
+
+    // Calculate distance (approximate)
+    final distance = _estimateDistance(eta, weather.windSpeed);
+
+    // Calculate confidence
+    final confidence = _calculateConfidence(analysis, eta);
+
+    return RainArrivalPrediction(
+      state: state,
+      eta: eta,
+      distanceMeters: distance,
+      intensity: analysis.forecastMaxPrecipitation > AlertThresholds.moderateRain
+          ? RainIntensity.moderate
+          : RainIntensity.light,
+      confidence: confidence,
+      direction: _calculateDirection(weather.windDirection),
+      source: 'forecast',
+      timestamp: DateTime.now(),
+    );
+  }
+
+  Duration? _calculateEta({
+    required LocationSnapshot location,
+    required WeatherSnapshot weather,
+    required PrecipitationForecast forecast,
+    required PrecipitationAnalysis analysis,
+  }) {
+    // If forecast shows rain, use that ETA
+    if (analysis.forecastFirstRainEta != null) {
+      return analysis.forecastFirstRainEta;
+    }
+
+    // If wind is bringing rain, estimate based on wind speed
+    if (weather.windSpeed > 0 && analysis.forecastHasRain) {
+      // Rough estimation: rain travels at wind speed
+      // This is a simplification - real implementation would use radar
+      return const Duration(minutes: 30); // Default conservative estimate
+    }
+
+    return null;
+  }
+
+  RainRiskState _determineState(Duration? eta, PrecipitationAnalysis analysis) {
+    if (eta == null) {
+      return analysis.hasAnyPrecipitation ? RainRiskState.watch : RainRiskState.idle;
+    }
+
+    final minutes = eta.inMinutes;
+
+    if (minutes <= AlertThresholds.imminentThreshold) {
+      return RainRiskState.imminent;
+    } else if (minutes <= AlertThresholds.warningThreshold) {
+      return RainRiskState.warning;
+    } else if (minutes <= AlertThresholds.approachingThreshold) {
+      return RainRiskState.approaching;
+    } else if (minutes <= AlertThresholds.watchThreshold) {
+      return RainRiskState.watch;
+    } else {
+      return RainRiskState.idle;
+    }
+  }
+
+  double? _estimateDistance(Duration? eta, double windSpeed) {
+    if (eta == null || windSpeed <= 0) return null;
+
+    // Rough estimation: rain moves at wind speed
+    // windSpeed is in km/h, convert to m/s
+    final speedMs = windSpeed / 3.6;
+    return speedMs * eta.inSeconds;
+  }
+
+  PredictionConfidence _calculateConfidence(
+    PrecipitationAnalysis analysis,
+    Duration? eta,
+  ) {
+    double score = analysis.confidence;
+
+    // Reduce confidence for very long ETAs
+    if (eta != null && eta.inMinutes > 60) {
+      score *= 0.7;
+    }
+
+    // Reduce confidence if no forecast data
+    if (!analysis.forecastHasRain && !analysis.isRaining) {
+      score *= 0.5;
+    }
+
+    if (score >= AlertThresholds.highConfidence) {
+      return PredictionConfidence.high;
+    } else if (score >= AlertThresholds.mediumConfidence) {
+      return PredictionConfidence.medium;
+    } else if (score >= AlertThresholds.lowConfidence) {
+      return PredictionConfidence.low;
+    } else {
+      return PredictionConfidence.none;
+    }
+  }
+
+  double? _calculateDirection(double windDirection) {
+    // Wind direction indicates where rain is coming FROM
+    // We want direction TO the rain (opposite direction)
+    return (windDirection + 180) % 360;
+  }
+}
