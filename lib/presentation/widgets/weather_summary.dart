@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../application/state/weather_state_provider.dart';
 
-class WeatherSummary extends StatelessWidget {
-  final WeatherState weatherState;
-
-  const WeatherSummary({super.key, required this.weatherState});
+class WeatherSummary extends ConsumerWidget {
+  const WeatherSummary({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final weatherState = ref.watch(weatherStateProvider);
+
     if (weatherState.isLoading) {
       return const Card(
         child: Padding(

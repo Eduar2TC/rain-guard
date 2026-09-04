@@ -23,7 +23,7 @@ dependencies:
   permission_handler: ^11.0.0
 
   # Network
-  connectivity_plus: ^5.0.0
+  connectivity_plus: ^7.0.0
 
   # Utilities
   intl: ^0.18.0

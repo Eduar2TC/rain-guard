@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../application/state/prediction_state_provider.dart';
 import '../../core/constants/theme.dart';
 import '../../domain/enums/prediction_confidence.dart';
 import '../../domain/enums/rain_risk_state.dart';
 
-class EtaIndicator extends StatelessWidget {
-  final PredictionState predictionState;
-
-  const EtaIndicator({super.key, required this.predictionState});
+class EtaIndicator extends ConsumerWidget {
+  const EtaIndicator({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final predictionState = ref.watch(predictionStateProvider);
+
     if (predictionState.isLoading) {
       return const Card(
         child: Padding(

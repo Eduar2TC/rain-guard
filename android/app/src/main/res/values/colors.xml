@@ -3,6 +3,7 @@
     <color name="colorPrimary">#2196F3</color>
     <color name="colorPrimaryDark">#1976D2</color>
     <color name="colorAccent">#FF9800</color>
+    <color name="ic_launcher_background">#2196F3</color>
     <color name="safe">#4CAF50</color>
     <color name="watch">#FFC107</color>
     <color name="approaching">#FF9800</color>
