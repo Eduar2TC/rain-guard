@@ -4,9 +4,12 @@ import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.os.PowerManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -16,6 +19,7 @@ import com.rainguard.R
 import com.rainguard.location.LocationManager
 import com.rainguard.weather.WeatherPlatformBridge
 import com.rainguard.notification.RainNotificationManager
+import com.rainguard.overlay.RainBubbleManager
 import kotlinx.coroutines.*
 import kotlin.math.abs
 
@@ -29,6 +33,8 @@ class RainMonitorForegroundService : Service() {
         private const val ACTION_STOP = "com.rainguard.ACTION_STOP"
         private const val ACTION_PAUSE = "com.rainguard.ACTION_PAUSE"
         private const val ACTION_RESUME = "com.rainguard.ACTION_RESUME"
+        private const val ACTION_ENABLE_BUBBLE = "com.rainguard.ACTION_ENABLE_BUBBLE"
+        private const val ACTION_DISABLE_BUBBLE = "com.rainguard.ACTION_DISABLE_BUBBLE"
 
         // Polling intervals (milliseconds)
         private const val NORMAL_POLLING = 300_000L // 5 min
@@ -49,12 +55,16 @@ class RainMonitorForegroundService : Service() {
     private val serviceScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     private var wakeLock: PowerManager.WakeLock? = null
 
+    private var foregroundListener: ((Boolean) -> Unit)? = null
+
     private lateinit var locationManager: LocationManager
     private lateinit var weatherBridge: WeatherPlatformBridge
     private lateinit var notificationManager: RainNotificationManager
+    private lateinit var bubbleManager: RainBubbleManager
 
     private var isRunning = false
     private var isPaused = false
+    private var bubbleEnabled = false
     private var currentPollingInterval = NORMAL_POLLING
     private var pollingJob: Job? = null
 
@@ -77,6 +87,31 @@ class RainMonitorForegroundService : Service() {
         locationManager = LocationManager(this)
         weatherBridge = WeatherPlatformBridge(this)
         notificationManager = RainNotificationManager(this)
+        bubbleManager = RainBubbleManager(this)
+        bubbleEnabled = getSharedPreferences("rainguard_prefs", Context.MODE_PRIVATE)
+            .getBoolean("bubble_enabled", false)
+        setupBubbleCallbacks()
+
+        foregroundListener = { _ ->
+            Handler(Looper.getMainLooper()).post { updateBubbleVisibility() }
+        }
+        RainGuardApplication.addForegroundListener(foregroundListener!!)
+    }
+
+    private fun updateBubbleVisibility() {
+        if (!isRunning || !bubbleEnabled) {
+            bubbleManager.hide()
+            return
+        }
+        if (isPaused) {
+            bubbleManager.hide()
+            return
+        }
+        if (!RainGuardApplication.isAppInForeground) {
+            showBubbleInternal()
+        } else {
+            bubbleManager.hide()
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -85,6 +120,8 @@ class RainMonitorForegroundService : Service() {
             ACTION_STOP -> stopMonitoring()
             ACTION_PAUSE -> pauseMonitoring()
             ACTION_RESUME -> resumeMonitoring()
+            ACTION_ENABLE_BUBBLE -> enableBubble(true)
+            ACTION_DISABLE_BUBBLE -> enableBubble(false)
             else -> {
                 if (!isRunning) {
                     startMonitoring()
@@ -92,6 +129,36 @@ class RainMonitorForegroundService : Service() {
             }
         }
         return START_STICKY
+    }
+
+    private fun enableBubble(enabled: Boolean) {
+        bubbleEnabled = enabled
+        getSharedPreferences("rainguard_prefs", Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean("bubble_enabled", enabled)
+            .apply()
+        Log.d(TAG, "Bubble ${if (enabled) "enabled" else "disabled"}")
+
+        updateBubbleVisibility()
+    }
+
+    private fun showBubble() {
+        updateBubbleVisibility()
+    }
+
+    private fun showBubbleInternal() {
+        bubbleManager.show()
+        bubbleManager.restorePosition()
+        bubbleManager.updateState(currentState, lastEtaMinutes)
+    }
+
+    private fun setupBubbleCallbacks() {
+        bubbleManager.onTap = {
+            val intent = Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+            }
+            startActivity(intent)
+        }
     }
 
     private fun startMonitoring() {
@@ -103,6 +170,7 @@ class RainMonitorForegroundService : Service() {
         startForeground(NOTIFICATION_ID, createNotification("RainGuard activo"))
         startLocationUpdates()
         startPolling()
+        showBubble()
     }
 
     private fun stopMonitoring() {
@@ -113,6 +181,7 @@ class RainMonitorForegroundService : Service() {
         pollingJob?.cancel()
         locationManager.stopUpdates()
         releaseWakeLock()
+        bubbleManager.hide()
 
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
@@ -123,6 +192,7 @@ class RainMonitorForegroundService : Service() {
         isPaused = true
         pollingJob?.cancel()
         locationManager.stopUpdates()
+        bubbleManager.hide()
         updateNotification("RainGuard pausado")
     }
 
@@ -132,6 +202,7 @@ class RainMonitorForegroundService : Service() {
         startLocationUpdates()
         startPolling()
         updateNotification("RainGuard activo")
+        showBubble()
     }
 
     private fun startLocationUpdates() {
@@ -180,6 +251,9 @@ class RainMonitorForegroundService : Service() {
             Log.d(TAG, "State changed: $currentState -> $newState")
             currentState = newState
             adjustPollingInterval()
+        }
+        if (bubbleManager.isShowing()) {
+            bubbleManager.updateState(currentState, lastEtaMinutes)
         }
     }
 
@@ -312,6 +386,8 @@ class RainMonitorForegroundService : Service() {
         serviceScope.cancel()
         locationManager.stopUpdates()
         releaseWakeLock()
+        bubbleManager.hide()
+        foregroundListener?.let { RainGuardApplication.removeForegroundListener(it) }
         Log.d(TAG, "Service destroyed")
     }
 }

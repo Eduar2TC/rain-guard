@@ -8,7 +8,6 @@ import '../widgets/location_info.dart';
 import '../widgets/weather_summary.dart';
 import '../widgets/eta_indicator.dart';
 import '../widgets/monitoring_toggle.dart';
-import '../widgets/bubble_preview.dart';
 import '../widgets/battery_status_card.dart';
 import 'debug_screen.dart';
 import 'settings_screen.dart';
@@ -156,9 +155,6 @@ class HomeScreen extends ConsumerWidget {
               ),
 
               const SizedBox(height: 16),
-
-              // Bubble Toggle
-              const BubblePreview(),
             ],
           ),
         ),
