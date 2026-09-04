@@ -109,6 +109,9 @@ class MainActivity : FlutterActivity() {
                 }
 
                 // Overlay
+                "hasOverlayPermission" -> {
+                    result.success(permissionManager.hasOverlayPermission())
+                }
                 "showBubble" -> {
                     if (permissionManager.hasOverlayPermission()) {
                         bubbleManager.show()

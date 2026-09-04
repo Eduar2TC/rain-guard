@@ -69,9 +69,21 @@ class BubbleStateNotifier extends StateNotifier<BubbleState> {
     _init();
   }
 
+  bool _pendingShow = false;
+
   void _init() {
     _methodChannel.onBubbleLongPress = _handleLongPress;
     _methodChannel.onBubblePositionChanged = _handlePositionChanged;
+    _methodChannel.onOverlayPermissionResult = _handleOverlayPermissionResult;
+  }
+
+  void _handleOverlayPermissionResult(bool granted) async {
+    if (!_pendingShow) return;
+    _pendingShow = false;
+    if (granted) {
+      await _methodChannel.showBubble();
+      state = state.copyWith(isVisible: true);
+    }
   }
 
   void _handleLongPress() {
@@ -86,6 +98,13 @@ class BubbleStateNotifier extends StateNotifier<BubbleState> {
   }
 
   Future<void> show() async {
+    // Overlay permission is required to display the floating bubble on
+    // Android 6+. Request it first so the bubble actually appears.
+    if (!await _methodChannel.hasOverlayPermission()) {
+      _pendingShow = true;
+      await _methodChannel.requestOverlayPermission();
+      return;
+    }
     await _methodChannel.showBubble();
     state = state.copyWith(isVisible: true);
   }
@@ -121,6 +140,7 @@ class BubbleStateNotifier extends StateNotifier<BubbleState> {
   void dispose() {
     _methodChannel.onBubbleLongPress = null;
     _methodChannel.onBubblePositionChanged = null;
+    _methodChannel.onOverlayPermissionResult = null;
     super.dispose();
   }
 }

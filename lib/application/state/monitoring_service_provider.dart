@@ -56,8 +56,12 @@ class MonitoringServiceNotifier extends StateNotifier<MonitoringServiceState> {
     try {
       state = state.copyWith(isMonitoring: true, error: null);
 
-      // Start location updates
+      // Start the foreground service (native background monitoring).
       await _methodChannel.startMonitoring();
+
+      // Start location updates on the Android side so location events flow
+      // to Flutter over the event channel.
+      await _ref.read(locationStateProvider.notifier).startUpdates();
 
       // Start listening to location updates
       _locationSubscription = _eventChannel.locationUpdates.listen(
