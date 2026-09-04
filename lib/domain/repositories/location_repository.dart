@@ -1,4 +1,4 @@
-import '../entities/location_snapshot.dart';
+import 'package:rain_guard/domain/entities/location_snapshot.dart';
 
 abstract class LocationRepository {
   Stream<LocationSnapshot> getLocationUpdates();

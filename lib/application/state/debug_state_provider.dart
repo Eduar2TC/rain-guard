@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/logging/app_logger.dart';
-import '../state/location_state_provider.dart';
-import '../state/weather_state_provider.dart';
-import '../state/prediction_state_provider.dart';
-import '../state/alert_state_provider.dart';
-import '../state/monitoring_service_provider.dart';
-import '../state/battery_state_provider.dart';
-import '../state/bubble_state_provider.dart';
+import 'package:rain_guard/core/logging/app_logger.dart';
+import 'package:rain_guard/application/state/location_state_provider.dart';
+import 'package:rain_guard/application/state/weather_state_provider.dart';
+import 'package:rain_guard/application/state/prediction_state_provider.dart';
+import 'package:rain_guard/application/state/alert_state_provider.dart';
+import 'package:rain_guard/application/state/monitoring_service_provider.dart';
+import 'package:rain_guard/application/state/battery_state_provider.dart';
+import 'package:rain_guard/application/state/bubble_state_provider.dart';
 
 // Debug State
 class DebugState {

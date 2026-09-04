@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../application/state/bubble_state_provider.dart';
+import 'package:rain_guard/application/state/bubble_state_provider.dart';
 
 class BubblePreview extends ConsumerWidget {
   const BubblePreview({super.key});

@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../domain/entities/weather_snapshot.dart';
-import '../../domain/entities/precipitation_forecast.dart';
-import '../../domain/entities/location_snapshot.dart';
+import 'package:rain_guard/domain/entities/weather_snapshot.dart';
+import 'package:rain_guard/domain/entities/precipitation_forecast.dart';
+import 'package:rain_guard/domain/entities/location_snapshot.dart';
 
 class LocalStorageDataSource {
   SharedPreferences? _prefs;

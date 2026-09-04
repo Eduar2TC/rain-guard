@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import '../enums/rain_risk_state.dart';
-import '../../core/constants/alert_thresholds.dart';
+import 'package:rain_guard/domain/enums/rain_risk_state.dart';
+import 'package:rain_guard/core/constants/alert_thresholds.dart';
 
 class MonitoringScheduler {
   Timer? _timer;

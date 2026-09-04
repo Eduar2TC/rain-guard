@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../domain/entities/location_snapshot.dart';
-import '../../data/datasources/android_location_datasource.dart';
+import 'package:rain_guard/domain/entities/location_snapshot.dart';
+import 'package:rain_guard/data/datasources/android_location_datasource.dart';
 import 'providers.dart';
 
 // Location State

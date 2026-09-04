@@ -1,8 +1,8 @@
-import '../entities/rain_arrival_prediction.dart';
-import '../entities/monitoring_state.dart';
-import '../entities/alert_decision.dart';
-import '../enums/rain_risk_state.dart';
-import '../enums/alert_priority.dart';
+import 'package:rain_guard/domain/entities/rain_arrival_prediction.dart';
+import 'package:rain_guard/domain/entities/monitoring_state.dart';
+import 'package:rain_guard/domain/entities/alert_decision.dart';
+import 'package:rain_guard/domain/enums/rain_risk_state.dart';
+import 'package:rain_guard/domain/enums/alert_priority.dart';
 import 'hysteresis_manager.dart';
 import 'anti_spam_manager.dart';
 

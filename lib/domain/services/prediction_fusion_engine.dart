@@ -1,8 +1,8 @@
-import '../entities/location_snapshot.dart';
-import '../entities/weather_snapshot.dart';
-import '../entities/precipitation_forecast.dart';
-import '../entities/rain_arrival_prediction.dart';
-import '../enums/prediction_confidence.dart';
+import 'package:rain_guard/domain/entities/location_snapshot.dart';
+import 'package:rain_guard/domain/entities/weather_snapshot.dart';
+import 'package:rain_guard/domain/entities/precipitation_forecast.dart';
+import 'package:rain_guard/domain/entities/rain_arrival_prediction.dart';
+import 'package:rain_guard/domain/enums/prediction_confidence.dart';
 import 'rain_arrival_predictor.dart';
 
 /// Combines multiple prediction sources to produce a final prediction

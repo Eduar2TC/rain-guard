@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../application/state/settings_state_provider.dart';
-import '../../domain/enums/monitoring_mode.dart';
+import 'package:rain_guard/application/state/settings_state_provider.dart';
+import 'package:rain_guard/domain/enums/monitoring_mode.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});

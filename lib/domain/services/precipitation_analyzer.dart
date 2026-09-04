@@ -1,6 +1,6 @@
-import '../entities/weather_snapshot.dart';
-import '../entities/precipitation_forecast.dart';
-import '../enums/rain_intensity.dart';
+import 'package:rain_guard/domain/entities/weather_snapshot.dart';
+import 'package:rain_guard/domain/entities/precipitation_forecast.dart';
+import 'package:rain_guard/domain/enums/rain_intensity.dart';
 
 class PrecipitationAnalyzer {
   /// Analyze current precipitation conditions

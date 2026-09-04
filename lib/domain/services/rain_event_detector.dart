@@ -1,10 +1,10 @@
 import 'dart:math';
 
-import '../entities/rain_event.dart';
-import '../entities/weather_snapshot.dart';
-import '../entities/geo_point.dart';
-import '../enums/rain_intensity.dart';
-import '../../core/constants/alert_thresholds.dart';
+import 'package:rain_guard/domain/entities/rain_event.dart';
+import 'package:rain_guard/domain/entities/weather_snapshot.dart';
+import 'package:rain_guard/domain/entities/geo_point.dart';
+import 'package:rain_guard/domain/enums/rain_intensity.dart';
+import 'package:rain_guard/core/constants/alert_thresholds.dart';
 
 class RainEventDetector {
   RainEvent? _activeEvent;

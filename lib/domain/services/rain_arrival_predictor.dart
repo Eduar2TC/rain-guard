@@ -1,11 +1,11 @@
-import '../entities/location_snapshot.dart';
-import '../entities/weather_snapshot.dart';
-import '../entities/precipitation_forecast.dart';
-import '../entities/rain_arrival_prediction.dart';
-import '../enums/rain_risk_state.dart';
-import '../enums/rain_intensity.dart';
-import '../enums/prediction_confidence.dart';
-import '../../core/constants/alert_thresholds.dart';
+import 'package:rain_guard/domain/entities/location_snapshot.dart';
+import 'package:rain_guard/domain/entities/weather_snapshot.dart';
+import 'package:rain_guard/domain/entities/precipitation_forecast.dart';
+import 'package:rain_guard/domain/entities/rain_arrival_prediction.dart';
+import 'package:rain_guard/domain/enums/rain_risk_state.dart';
+import 'package:rain_guard/domain/enums/rain_intensity.dart';
+import 'package:rain_guard/domain/enums/prediction_confidence.dart';
+import 'package:rain_guard/core/constants/alert_thresholds.dart';
 import 'precipitation_analyzer.dart';
 
 class RainArrivalPredictor {

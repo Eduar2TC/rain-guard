@@ -1,4 +1,4 @@
-import '../enums/monitoring_mode.dart';
+import 'package:rain_guard/domain/enums/monitoring_mode.dart';
 
 abstract class SettingsRepository {
   Future<MonitoringMode> getMonitoringMode();

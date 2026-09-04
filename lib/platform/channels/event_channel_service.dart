@@ -1,8 +1,8 @@
 import 'package:flutter/services.dart';
 
-import '../../domain/entities/location_snapshot.dart';
-import '../../domain/entities/geo_point.dart';
-import '../../domain/entities/monitoring_state.dart';
+import 'package:rain_guard/domain/entities/location_snapshot.dart';
+import 'package:rain_guard/domain/entities/geo_point.dart';
+import 'package:rain_guard/domain/entities/monitoring_state.dart';
 
 class EventChannelService {
   static const _monitoringChannel = EventChannel('rainguard/events');

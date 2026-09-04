@@ -1,15 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../domain/entities/rain_arrival_prediction.dart';
-import '../../domain/entities/monitoring_state.dart';
-import '../../domain/entities/alert_decision.dart';
-import '../../domain/entities/rain_event.dart';
-import '../../domain/entities/geo_point.dart';
-import '../../domain/entities/weather_snapshot.dart';
-import '../../domain/enums/rain_risk_state.dart';
-import '../../domain/services/alert_engine.dart';
-import '../../domain/services/rain_event_detector.dart';
-import '../../platform/channels/method_channel_service.dart';
+import 'package:rain_guard/domain/entities/rain_arrival_prediction.dart';
+import 'package:rain_guard/domain/entities/monitoring_state.dart';
+import 'package:rain_guard/domain/entities/alert_decision.dart';
+import 'package:rain_guard/domain/entities/rain_event.dart';
+import 'package:rain_guard/domain/entities/geo_point.dart';
+import 'package:rain_guard/domain/entities/weather_snapshot.dart';
+import 'package:rain_guard/domain/enums/rain_risk_state.dart';
+import 'package:rain_guard/domain/services/alert_engine.dart';
+import 'package:rain_guard/domain/services/rain_event_detector.dart';
+import 'package:rain_guard/platform/channels/method_channel_service.dart';
 import 'providers.dart';
 
 // Provider for AlertEngine

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../application/state/debug_state_provider.dart';
-import '../../core/logging/app_logger.dart';
+import 'package:rain_guard/application/state/debug_state_provider.dart';
+import 'package:rain_guard/core/logging/app_logger.dart';
 
 class DebugScreen extends ConsumerStatefulWidget {
   const DebugScreen({super.key});

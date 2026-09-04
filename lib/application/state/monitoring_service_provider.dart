@@ -2,17 +2,17 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../domain/entities/location_snapshot.dart';
-import '../../domain/enums/network_state.dart';
-import '../../platform/channels/method_channel_service.dart';
-import '../../platform/channels/event_channel_service.dart';
-import '../state/providers.dart';
-import '../state/location_state_provider.dart';
-import '../state/weather_state_provider.dart';
-import '../state/prediction_state_provider.dart';
-import '../state/alert_state_provider.dart';
-import '../state/battery_state_provider.dart';
-import '../../domain/services/monitoring_scheduler.dart';
+import 'package:rain_guard/domain/entities/location_snapshot.dart';
+import 'package:rain_guard/domain/enums/network_state.dart';
+import 'package:rain_guard/platform/channels/method_channel_service.dart';
+import 'package:rain_guard/platform/channels/event_channel_service.dart';
+import 'package:rain_guard/application/state/providers.dart';
+import 'package:rain_guard/application/state/location_state_provider.dart';
+import 'package:rain_guard/application/state/weather_state_provider.dart';
+import 'package:rain_guard/application/state/prediction_state_provider.dart';
+import 'package:rain_guard/application/state/alert_state_provider.dart';
+import 'package:rain_guard/application/state/battery_state_provider.dart';
+import 'package:rain_guard/domain/services/monitoring_scheduler.dart';
 
 // Monitoring State
 class MonitoringServiceState {
