@@ -86,6 +86,7 @@ class AppLogger {
 
     // Print to console in debug mode
     assert(() {
+      // ignore: avoid_print - Debug-only console logging, stripped in release builds.
       print(entry.toString());
       return true;
     }());
