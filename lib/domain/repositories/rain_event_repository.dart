@@ -1,4 +1,4 @@
-import '../entities/rain_event.dart';
+import 'package:rain_guard/domain/entities/rain_event.dart';
 
 abstract class RainEventRepository {
   Future<void> recordEvent(RainEvent event);

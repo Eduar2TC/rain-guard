@@ -1,4 +1,4 @@
-import '../enums/movement_state.dart';
+import 'package:rain_guard/domain/enums/movement_state.dart';
 import 'geo_point.dart';
 
 class LocationSnapshot {

@@ -1,11 +1,11 @@
-import '../../domain/entities/geo_point.dart';
-import '../../domain/entities/weather_snapshot.dart';
-import '../../domain/entities/precipitation_forecast.dart';
-import '../../domain/repositories/weather_repository.dart';
-import '../../domain/enums/network_state.dart';
-import '../datasources/weather_data_source.dart';
-import '../datasources/local_storage_data_source.dart';
-import '../datasources/network_data_source.dart';
+import 'package:rain_guard/domain/entities/geo_point.dart';
+import 'package:rain_guard/domain/entities/weather_snapshot.dart';
+import 'package:rain_guard/domain/entities/precipitation_forecast.dart';
+import 'package:rain_guard/domain/repositories/weather_repository.dart';
+import 'package:rain_guard/domain/enums/network_state.dart';
+import 'package:rain_guard/data/datasources/weather_data_source.dart';
+import 'package:rain_guard/data/datasources/local_storage_data_source.dart';
+import 'package:rain_guard/data/datasources/network_data_source.dart';
 
 class WeatherRepositoryImpl implements WeatherRepository {
   final WeatherDataSource _weatherDataSource;

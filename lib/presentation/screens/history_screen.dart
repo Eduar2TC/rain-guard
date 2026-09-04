@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../application/state/alert_state_provider.dart';
-import '../../domain/entities/rain_event.dart';
+import 'package:rain_guard/application/state/alert_state_provider.dart';
+import 'package:rain_guard/domain/entities/rain_event.dart';
 
 class HistoryScreen extends ConsumerWidget {
   const HistoryScreen({super.key});

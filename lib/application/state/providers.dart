@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../platform/channels/method_channel_service.dart';
-import '../../platform/channels/event_channel_service.dart';
-import '../../data/datasources/android_location_datasource.dart';
-import '../../data/datasources/network_data_source.dart';
+import 'package:rain_guard/platform/channels/method_channel_service.dart';
+import 'package:rain_guard/platform/channels/event_channel_service.dart';
+import 'package:rain_guard/data/datasources/android_location_datasource.dart';
+import 'package:rain_guard/data/datasources/network_data_source.dart';
 
 // Shared providers for platform channels and data sources
 final methodChannelServiceProvider = Provider<MethodChannelService>((ref) {

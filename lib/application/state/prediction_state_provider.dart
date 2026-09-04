@@ -1,14 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../domain/entities/rain_arrival_prediction.dart';
-import '../../domain/entities/location_snapshot.dart';
-import '../../domain/entities/weather_snapshot.dart';
-import '../../domain/entities/precipitation_forecast.dart';
-import '../../domain/enums/rain_risk_state.dart';
-import '../../domain/enums/prediction_confidence.dart';
-import '../../domain/services/rain_arrival_predictor.dart';
-import '../../domain/services/prediction_fusion_engine.dart';
-import '../../domain/services/precipitation_analyzer.dart';
+import 'package:rain_guard/domain/entities/rain_arrival_prediction.dart';
+import 'package:rain_guard/domain/entities/location_snapshot.dart';
+import 'package:rain_guard/domain/entities/weather_snapshot.dart';
+import 'package:rain_guard/domain/entities/precipitation_forecast.dart';
+import 'package:rain_guard/domain/enums/rain_risk_state.dart';
+import 'package:rain_guard/domain/enums/prediction_confidence.dart';
+import 'package:rain_guard/domain/services/rain_arrival_predictor.dart';
+import 'package:rain_guard/domain/services/prediction_fusion_engine.dart';
+import 'package:rain_guard/domain/services/precipitation_analyzer.dart';
 
 // Provider for PrecipitationAnalyzer
 final precipitationAnalyzerProvider = Provider<PrecipitationAnalyzer>((ref) {

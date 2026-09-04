@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import '../../domain/entities/location_snapshot.dart';
-import '../../domain/repositories/location_repository.dart';
-import '../datasources/android_location_datasource.dart';
+import 'package:rain_guard/domain/entities/location_snapshot.dart';
+import 'package:rain_guard/domain/repositories/location_repository.dart';
+import 'package:rain_guard/data/datasources/android_location_datasource.dart';
 
 class LocationRepositoryImpl implements LocationRepository {
   final AndroidLocationDataSource _dataSource;

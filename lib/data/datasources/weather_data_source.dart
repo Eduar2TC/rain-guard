@@ -3,11 +3,11 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import '../../core/constants/weather_api.dart';
-import '../../core/logging/app_logger.dart';
-import '../../domain/entities/geo_point.dart';
-import '../../domain/entities/weather_snapshot.dart';
-import '../../domain/entities/precipitation_forecast.dart';
+import 'package:rain_guard/core/constants/weather_api.dart';
+import 'package:rain_guard/core/logging/app_logger.dart';
+import 'package:rain_guard/domain/entities/geo_point.dart';
+import 'package:rain_guard/domain/entities/weather_snapshot.dart';
+import 'package:rain_guard/domain/entities/precipitation_forecast.dart';
 
 class WeatherDataSource {
   final http.Client _client;

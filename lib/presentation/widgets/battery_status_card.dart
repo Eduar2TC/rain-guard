@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../application/state/battery_state_provider.dart';
+import 'package:rain_guard/application/state/battery_state_provider.dart';
 
 class BatteryStatusCard extends ConsumerWidget {
   const BatteryStatusCard({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../application/state/weather_state_provider.dart';
+import 'package:rain_guard/application/state/weather_state_provider.dart';
 
 class WeatherSummary extends ConsumerWidget {
   const WeatherSummary({super.key});

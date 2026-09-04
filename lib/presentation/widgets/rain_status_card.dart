@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../core/constants/theme.dart';
-import '../../domain/entities/monitoring_state.dart';
+import 'package:rain_guard/core/constants/theme.dart';
+import 'package:rain_guard/domain/entities/monitoring_state.dart';
 
 class RainStatusCard extends StatelessWidget {
   final MonitoringState state;

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../platform/channels/method_channel_service.dart';
+import 'package:rain_guard/platform/channels/method_channel_service.dart';
 import 'providers.dart';
 
 // Battery State

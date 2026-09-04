@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../domain/enums/monitoring_mode.dart';
+import 'package:rain_guard/domain/enums/monitoring_mode.dart';
 import 'bubble_state_provider.dart';
 import 'alert_state_provider.dart';
 

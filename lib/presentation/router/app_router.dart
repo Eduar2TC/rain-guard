@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../screens/home_screen.dart';
-import '../screens/settings_screen.dart';
-import '../screens/history_screen.dart';
-import '../screens/debug_screen.dart';
-import '../screens/about_screen.dart';
-import '../screens/onboarding_screen.dart';
+import 'package:rain_guard/presentation/screens/home_screen.dart';
+import 'package:rain_guard/presentation/screens/settings_screen.dart';
+import 'package:rain_guard/presentation/screens/history_screen.dart';
+import 'package:rain_guard/presentation/screens/debug_screen.dart';
+import 'package:rain_guard/presentation/screens/about_screen.dart';
+import 'package:rain_guard/presentation/screens/onboarding_screen.dart';
 
 class AppRouter {
   static const String home = '/';

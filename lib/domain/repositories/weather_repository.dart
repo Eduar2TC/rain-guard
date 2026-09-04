@@ -1,7 +1,7 @@
-import '../entities/geo_point.dart';
-import '../entities/weather_snapshot.dart';
-import '../entities/precipitation_forecast.dart';
-import '../enums/network_state.dart';
+import 'package:rain_guard/domain/entities/geo_point.dart';
+import 'package:rain_guard/domain/entities/weather_snapshot.dart';
+import 'package:rain_guard/domain/entities/precipitation_forecast.dart';
+import 'package:rain_guard/domain/enums/network_state.dart';
 
 abstract class WeatherRepository {
   Future<WeatherSnapshot> getCurrentWeather(GeoPoint location);

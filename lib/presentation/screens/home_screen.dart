@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../application/state/alert_state_provider.dart';
-import '../../application/state/monitoring_service_provider.dart';
-import '../../domain/enums/rain_risk_state.dart';
-import '../widgets/location_info.dart';
-import '../widgets/weather_summary.dart';
-import '../widgets/eta_indicator.dart';
-import '../widgets/monitoring_toggle.dart';
-import '../widgets/battery_status_card.dart';
-import 'debug_screen.dart';
-import 'settings_screen.dart';
-import 'history_screen.dart';
-import 'about_screen.dart';
+import 'package:rain_guard/application/state/alert_state_provider.dart';
+import 'package:rain_guard/application/state/monitoring_service_provider.dart';
+import 'package:rain_guard/domain/enums/rain_risk_state.dart';
+import 'package:rain_guard/presentation/widgets/location_info.dart';
+import 'package:rain_guard/presentation/widgets/weather_summary.dart';
+import 'package:rain_guard/presentation/widgets/eta_indicator.dart';
+import 'package:rain_guard/presentation/widgets/monitoring_toggle.dart';
+import 'package:rain_guard/presentation/widgets/battery_status_card.dart';
+import 'package:rain_guard/presentation/screens/debug_screen.dart';
+import 'package:rain_guard/presentation/screens/settings_screen.dart';
+import 'package:rain_guard/presentation/screens/history_screen.dart';
+import 'package:rain_guard/presentation/screens/about_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});

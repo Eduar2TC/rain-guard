@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../application/state/location_state_provider.dart';
+import 'package:rain_guard/application/state/location_state_provider.dart';
 
 class LocationInfo extends ConsumerWidget {
   const LocationInfo({super.key});

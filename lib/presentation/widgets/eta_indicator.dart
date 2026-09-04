@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../application/state/prediction_state_provider.dart';
-import '../../core/constants/theme.dart';
-import '../../domain/enums/prediction_confidence.dart';
-import '../../domain/enums/rain_risk_state.dart';
+import 'package:rain_guard/application/state/prediction_state_provider.dart';
+import 'package:rain_guard/core/constants/theme.dart';
+import 'package:rain_guard/domain/enums/prediction_confidence.dart';
+import 'package:rain_guard/domain/enums/rain_risk_state.dart';
 
 class EtaIndicator extends ConsumerWidget {
   const EtaIndicator({super.key});

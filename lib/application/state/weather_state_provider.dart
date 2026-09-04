@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../domain/entities/weather_snapshot.dart';
-import '../../domain/entities/precipitation_forecast.dart';
-import '../../domain/entities/geo_point.dart';
-import '../../domain/enums/network_state.dart';
-import '../../domain/repositories/weather_repository.dart';
-import '../../data/datasources/weather_data_source.dart';
-import '../../data/datasources/local_storage_data_source.dart';
-import '../../data/repositories/weather_repository_impl.dart';
+import 'package:rain_guard/domain/entities/weather_snapshot.dart';
+import 'package:rain_guard/domain/entities/precipitation_forecast.dart';
+import 'package:rain_guard/domain/entities/geo_point.dart';
+import 'package:rain_guard/domain/enums/network_state.dart';
+import 'package:rain_guard/domain/repositories/weather_repository.dart';
+import 'package:rain_guard/data/datasources/weather_data_source.dart';
+import 'package:rain_guard/data/datasources/local_storage_data_source.dart';
+import 'package:rain_guard/data/repositories/weather_repository_impl.dart';
 import 'providers.dart';
 
 // Providers for data sources

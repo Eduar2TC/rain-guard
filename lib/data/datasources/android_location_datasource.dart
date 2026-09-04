@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import '../../core/logging/app_logger.dart';
-import '../../domain/entities/location_snapshot.dart';
-import '../../domain/entities/geo_point.dart';
-import '../../platform/channels/method_channel_service.dart';
-import '../../platform/channels/event_channel_service.dart';
+import 'package:rain_guard/core/logging/app_logger.dart';
+import 'package:rain_guard/domain/entities/location_snapshot.dart';
+import 'package:rain_guard/domain/entities/geo_point.dart';
+import 'package:rain_guard/platform/channels/method_channel_service.dart';
+import 'package:rain_guard/platform/channels/event_channel_service.dart';
 
 class AndroidLocationDataSource {
   final MethodChannelService _methodChannel;

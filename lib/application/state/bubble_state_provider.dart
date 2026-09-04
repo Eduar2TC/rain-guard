@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../platform/channels/method_channel_service.dart';
-import '../../domain/enums/rain_risk_state.dart';
+import 'package:rain_guard/platform/channels/method_channel_service.dart';
+import 'package:rain_guard/domain/enums/rain_risk_state.dart';
 import 'providers.dart';
 
 // Bubble State

@@ -1,4 +1,4 @@
-import '../entities/monitoring_state.dart';
+import 'package:rain_guard/domain/entities/monitoring_state.dart';
 
 abstract class MonitoringRepository {
   Stream<MonitoringState> getMonitoringState();
