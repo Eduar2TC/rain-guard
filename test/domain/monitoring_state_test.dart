@@ -29,24 +29,24 @@ void main() {
     });
 
     test('isDataStale returns true when data is old', () {
-      final state = MonitoringState(
-        dataAge: const Duration(minutes: 15),
+      const state = MonitoringState(
+        dataAge: Duration(minutes: 15),
       );
 
       expect(state.isDataStale, true);
     });
 
     test('isDataStale returns false when data is fresh', () {
-      final state = MonitoringState(
-        dataAge: const Duration(minutes: 5),
+      const state = MonitoringState(
+        dataAge: Duration(minutes: 5),
       );
 
       expect(state.isDataStale, false);
     });
 
     test('etaMinutes returns correct value', () {
-      final state = MonitoringState(
-        eta: const Duration(minutes: 5),
+      const state = MonitoringState(
+        eta: Duration(minutes: 5),
       );
 
       expect(state.etaMinutes, 5);

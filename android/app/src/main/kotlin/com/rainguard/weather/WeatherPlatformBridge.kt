@@ -23,6 +23,7 @@ class WeatherPlatformBridge(private val context: Context) {
         val windDirection: Double,
         val windGust: Double,
         val weatherCode: Int,
+        val precipitationEtaMinutes: Int?,
         val timestamp: Long,
         val sourceTimestamp: Long
     )
@@ -38,32 +39,62 @@ class WeatherPlatformBridge(private val context: Context) {
                 connection.connectTimeout = 10000
                 connection.readTimeout = 10000
 
-                val response = connection.inputStream.bufferedReader().readText()
-                val json = JSONObject(response)
+                try {
+                    val response = connection.inputStream.bufferedReader().readText()
+                    val json = JSONObject(response)
 
-                val current = json.getJSONObject("current")
+                    val current = json.getJSONObject("current")
 
-                val weatherData = WeatherData(
-                    precipitation = current.getDouble("precipitation"),
-                    rain = current.getDouble("rain"),
-                    showers = current.getDouble("showers"),
-                    temperature = current.getDouble("temperature_2m"),
-                    windSpeed = current.getDouble("wind_speed_10m"),
-                    windDirection = current.getDouble("wind_direction_10m"),
-                    windGust = current.getDouble("wind_gusts_10m"),
-                    weatherCode = current.getInt("weather_code"),
-                    timestamp = System.currentTimeMillis(),
-                    sourceTimestamp = System.currentTimeMillis()
-                )
+                    val precipitationEta = parsePrecipitationEta(json)
 
-                lastWeatherData = weatherData
-                lastFetchTime = System.currentTimeMillis()
+                    val weatherData = WeatherData(
+                        precipitation = current.getDouble("precipitation"),
+                        rain = current.getDouble("rain"),
+                        showers = current.getDouble("showers"),
+                        temperature = current.getDouble("temperature_2m"),
+                        windSpeed = current.getDouble("wind_speed_10m"),
+                        windDirection = current.getDouble("wind_direction_10m"),
+                        windGust = current.getDouble("wind_gusts_10m"),
+                        weatherCode = current.getInt("weather_code"),
+                        precipitationEtaMinutes = precipitationEta,
+                        timestamp = System.currentTimeMillis(),
+                        sourceTimestamp = System.currentTimeMillis()
+                    )
 
-                weatherData
+                    lastWeatherData = weatherData
+                    lastFetchTime = System.currentTimeMillis()
+
+                    weatherData
+                } finally {
+                    connection.disconnect()
+                }
             } catch (e: Exception) {
                 null
             }
         }
+    }
+
+    private fun parsePrecipitationEta(json: JSONObject): Int? {
+        val minutely15 = json.optJSONObject("minutely_15") ?: return null
+        val times = minutely15.optJSONArray("time") ?: return null
+        val precipitation = minutely15.optJSONArray("precipitation") ?: return null
+
+        val now = System.currentTimeMillis()
+        for (i in 0 until times.length()) {
+            val timeString = times.optString(i)
+            val amount = precipitation.optDouble(i)
+            if (amount > 0.5) {
+                val time = try {
+                    java.time.OffsetDateTime.parse(timeString).toInstant().toEpochMilli()
+                } catch (e: Exception) {
+                    continue
+                }
+                if (time > now) {
+                    return ((time - now) / 60000).toInt()
+                }
+            }
+        }
+        return null
     }
 
     fun getLastWeatherData(): WeatherData? = lastWeatherData

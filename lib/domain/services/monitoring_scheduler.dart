@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import '../../enums/rain_risk_state.dart';
+import '../enums/rain_risk_state.dart';
 import '../../core/constants/alert_thresholds.dart';
 
 class MonitoringScheduler {

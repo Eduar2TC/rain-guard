@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../../core/constants/weather_api.dart';
+import '../../core/logging/app_logger.dart';
 import '../../domain/entities/geo_point.dart';
 import '../../domain/entities/weather_snapshot.dart';
 import '../../domain/entities/precipitation_forecast.dart';
@@ -34,7 +35,7 @@ class WeatherDataSource {
       }
       return null;
     } catch (e) {
-      print('Weather API error: $e');
+      logger.warning(LogTags.weather, 'Weather API error: $e');
       return null;
     }
   }
@@ -57,7 +58,7 @@ class WeatherDataSource {
         weatherCode: current['weather_code'] as int? ?? 0,
       );
     } catch (e) {
-      print('Parse weather error: $e');
+      logger.warning(LogTags.weather, 'Parse weather error: $e');
       return null;
     }
   }
@@ -97,7 +98,7 @@ class WeatherDataSource {
         intervals: intervals,
       );
     } catch (e) {
-      print('Parse forecast error: $e');
+      logger.warning(LogTags.weather, 'Parse forecast error: $e');
       return null;
     }
   }

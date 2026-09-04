@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/entities/rain_arrival_prediction.dart';
@@ -12,9 +10,7 @@ import '../../domain/enums/rain_risk_state.dart';
 import '../../domain/services/alert_engine.dart';
 import '../../domain/services/rain_event_detector.dart';
 import '../../platform/channels/method_channel_service.dart';
-import 'prediction_state_provider.dart';
-import 'location_state_provider.dart';
-import 'weather_state_provider.dart';
+import 'providers.dart';
 
 // Provider for AlertEngine
 final alertEngineProvider = Provider<AlertEngine>((ref) {
@@ -153,14 +149,22 @@ class AlertStateNotifier extends StateNotifier<AlertState> {
   }
 
   void _sendNotification(AlertDecision decision) {
-    // This will be handled by the foreground service
-    // For now, we just log it
-    print('Alert: ${decision.message}');
+    _methodChannel.showNotification(
+      title: 'RainGuard',
+      body: decision.message,
+      priority: decision.priority.androidPriority,
+    );
   }
 
   void toggleAlerts() {
     state = state.copyWith(
       alertsEnabled: !state.alertsEnabled,
+    );
+  }
+
+  void setAlertsEnabled(bool enabled) {
+    state = state.copyWith(
+      alertsEnabled: enabled,
     );
   }
 

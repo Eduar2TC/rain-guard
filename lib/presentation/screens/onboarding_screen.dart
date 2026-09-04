@@ -15,31 +15,31 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int _currentPage = 0;
 
   final List<_OnboardingPage> _pages = [
-    _OnboardingPage(
+    const _OnboardingPage(
       icon: Icons.wb_sunny,
       title: 'Bienvenido a RainGuard',
       description: 'Tu sistema de alerta de lluvia para ciclistas. Te avisaremos cuando la lluvia se esté acercando.',
       color: Colors.blue,
     ),
-    _OnboardingPage(
+    const _OnboardingPage(
       icon: Icons.location_on,
       title: 'Ubicación',
       description: 'RainGuard necesita tu ubicación para calcular la distancia y dirección de la lluvia respecto a ti.',
       color: Colors.green,
     ),
-    _OnboardingPage(
+    const _OnboardingPage(
       icon: Icons.notifications_active,
       title: 'Notificaciones',
       description: 'Recibe alertas cuando la lluvia esté cerca. Puedes configurar el nivel de alerta que prefieras.',
       color: Colors.orange,
     ),
-    _OnboardingPage(
+    const _OnboardingPage(
       icon: Icons.smartphone,
       title: 'Burbuja Flotante',
       description: 'Una pequeña burbuja sobre otras aplicaciones te mostrará el estado del clima mientras pedaleas.',
       color: Colors.purple,
     ),
-    _OnboardingPage(
+    const _OnboardingPage(
       icon: Icons.battery_saver,
       title: 'Optimizado para Batería',
       description: 'RainGuard ajusta automáticamente su consumo según el nivel de batería y el riesgo de lluvia.',
@@ -116,7 +116,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           width: 120,
                           height: 120,
                           decoration: BoxDecoration(
-                            color: page.color.withOpacity(0.1),
+                            color: page.color.withValues(alpha: 0.1),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(

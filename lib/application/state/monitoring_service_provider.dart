@@ -3,15 +3,15 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/entities/location_snapshot.dart';
-import '../../domain/entities/weather_snapshot.dart';
-import '../../domain/entities/precipitation_forecast.dart';
-import '../../domain/entities/rain_arrival_prediction.dart';
-import '../../domain/enums/rain_risk_state.dart';
+import '../../domain/enums/network_state.dart';
+import '../../platform/channels/method_channel_service.dart';
+import '../../platform/channels/event_channel_service.dart';
 import '../state/providers.dart';
 import '../state/location_state_provider.dart';
 import '../state/weather_state_provider.dart';
 import '../state/prediction_state_provider.dart';
 import '../state/alert_state_provider.dart';
+import '../state/battery_state_provider.dart';
 import '../../domain/services/monitoring_scheduler.dart';
 
 // Monitoring State
@@ -47,16 +47,10 @@ class MonitoringServiceNotifier extends StateNotifier<MonitoringServiceState> {
 
   MonitoringScheduler? _scheduler;
   StreamSubscription? _locationSubscription;
-  StreamSubscription? _weatherSubscription;
+  bool _isPolling = false;
 
   MonitoringServiceNotifier(this._methodChannel, this._eventChannel, this._ref)
-      : super(const MonitoringServiceState()) {
-    _init();
-  }
-
-  void _init() {
-    _eventChannel.startListening();
-  }
+      : super(const MonitoringServiceState());
 
   Future<void> startMonitoring() async {
     try {
@@ -108,6 +102,9 @@ class MonitoringServiceNotifier extends StateNotifier<MonitoringServiceState> {
       state = state.copyWith(isPaused: true);
       await _methodChannel.pauseMonitoring();
       _scheduler?.stop();
+      _locationSubscription?.cancel();
+      _locationSubscription = null;
+      _ref.read(locationStateProvider.notifier).stopUpdates();
     } catch (e) {
       state = state.copyWith(error: e.toString());
     }
@@ -117,7 +114,20 @@ class MonitoringServiceNotifier extends StateNotifier<MonitoringServiceState> {
     try {
       state = state.copyWith(isPaused: false);
       await _methodChannel.resumeMonitoring();
+
+      // Re-establish location listening
+      _locationSubscription?.cancel();
+      _locationSubscription = _eventChannel.locationUpdates.listen(
+        (location) {
+          _onLocationUpdate(location);
+        },
+        onError: (error) {
+          state = state.copyWith(error: error.toString());
+        },
+      );
+
       _scheduler?.start();
+      _ref.read(locationStateProvider.notifier).startUpdates();
     } catch (e) {
       state = state.copyWith(error: e.toString());
     }
@@ -132,10 +142,13 @@ class MonitoringServiceNotifier extends StateNotifier<MonitoringServiceState> {
   }
 
   Future<void> _pollWeather() async {
-    final location = _ref.read(locationStateProvider).currentLocation;
-    if (location == null) return;
+    if (_isPolling) return;
+    _isPolling = true;
 
     try {
+      final location = _ref.read(locationStateProvider).currentLocation;
+      if (location == null) return;
+
       // Fetch weather
       await _ref.read(weatherStateProvider.notifier).fetchWeather(location.position);
 
@@ -157,15 +170,19 @@ class MonitoringServiceNotifier extends StateNotifier<MonitoringServiceState> {
 
           // Update scheduler based on state
           final alertState = _ref.read(alertStateProvider);
+          final batteryState = _ref.read(batteryStateProvider);
+          final networkState = _ref.read(weatherStateProvider).networkState;
           _scheduler?.update(
             riskState: alertState.currentState,
-            batteryLevel: 100, // TODO: Get actual battery level
-            networkAvailable: true, // TODO: Get actual network state
+            batteryLevel: batteryState.percentage,
+            networkAvailable: networkState != NetworkState.noConnection,
           );
         }
       }
     } catch (e) {
-      print('Poll weather error: $e');
+      state = state.copyWith(error: e.toString());
+    } finally {
+      _isPolling = false;
     }
   }
 
@@ -173,7 +190,6 @@ class MonitoringServiceNotifier extends StateNotifier<MonitoringServiceState> {
   void dispose() {
     _locationSubscription?.cancel();
     _scheduler?.dispose();
-    _eventChannel.dispose();
     super.dispose();
   }
 }

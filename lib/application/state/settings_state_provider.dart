@@ -4,8 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/enums/monitoring_mode.dart';
-import '../../platform/channels/method_channel_service.dart';
-import 'providers.dart';
 import 'bubble_state_provider.dart';
 import 'alert_state_provider.dart';
 
@@ -52,21 +50,33 @@ class SettingsState {
 
 // Settings State Notifier
 class SettingsStateNotifier extends StateNotifier<SettingsState> {
-  final SharedPreferences _prefs;
-  final Ref _ref;
+  SharedPreferences? _prefs;
+  late final Ref _ref;
 
-  SettingsStateNotifier(this._prefs, this._ref) : super(const SettingsState()) {
-    _loadSettings();
+  SettingsStateNotifier(this._ref) : super(const SettingsState()) {
+    _init();
+  }
+
+  Future<void> _init() async {
+    try {
+      _prefs = await SharedPreferences.getInstance();
+      await _loadSettings();
+    } catch (e) {
+      state = state.copyWith(isLoaded: true);
+    }
   }
 
   Future<void> _loadSettings() async {
+    final prefs = _prefs;
+    if (prefs == null) return;
+
     state = SettingsState(
-      bubbleEnabled: _prefs.getBool('bubble_enabled') ?? true,
-      monitoringMode: MonitoringMode.values[_prefs.getInt('monitoring_mode') ?? 3],
-      alertsEnabled: _prefs.getBool('alerts_enabled') ?? true,
-      pollingInterval: _prefs.getDouble('polling_interval') ?? 5.0,
-      soundEnabled: _prefs.getBool('sound_enabled') ?? true,
-      vibrationEnabled: _prefs.getBool('vibration_enabled') ?? true,
+      bubbleEnabled: prefs.getBool('bubble_enabled') ?? true,
+      monitoringMode: MonitoringMode.values[prefs.getInt('monitoring_mode') ?? 3],
+      alertsEnabled: prefs.getBool('alerts_enabled') ?? true,
+      pollingInterval: prefs.getDouble('polling_interval') ?? 5.0,
+      soundEnabled: prefs.getBool('sound_enabled') ?? true,
+      vibrationEnabled: prefs.getBool('vibration_enabled') ?? true,
       isLoaded: true,
     );
 
@@ -76,34 +86,34 @@ class SettingsStateNotifier extends StateNotifier<SettingsState> {
   }
 
   Future<void> setBubbleEnabled(bool enabled) async {
-    await _prefs.setBool('bubble_enabled', enabled);
+    await _prefs?.setBool('bubble_enabled', enabled);
     state = state.copyWith(bubbleEnabled: enabled);
     _applyBubbleSettings();
   }
 
   Future<void> setMonitoringMode(MonitoringMode mode) async {
-    await _prefs.setInt('monitoring_mode', mode.index);
+    await _prefs?.setInt('monitoring_mode', mode.index);
     state = state.copyWith(monitoringMode: mode);
   }
 
   Future<void> setAlertsEnabled(bool enabled) async {
-    await _prefs.setBool('alerts_enabled', enabled);
+    await _prefs?.setBool('alerts_enabled', enabled);
     state = state.copyWith(alertsEnabled: enabled);
     _applyAlertSettings();
   }
 
   Future<void> setPollingInterval(double minutes) async {
-    await _prefs.setDouble('polling_interval', minutes);
+    await _prefs?.setDouble('polling_interval', minutes);
     state = state.copyWith(pollingInterval: minutes);
   }
 
   Future<void> setSoundEnabled(bool enabled) async {
-    await _prefs.setBool('sound_enabled', enabled);
+    await _prefs?.setBool('sound_enabled', enabled);
     state = state.copyWith(soundEnabled: enabled);
   }
 
   Future<void> setVibrationEnabled(bool enabled) async {
-    await _prefs.setBool('vibration_enabled', enabled);
+    await _prefs?.setBool('vibration_enabled', enabled);
     state = state.copyWith(vibrationEnabled: enabled);
   }
 
@@ -118,10 +128,7 @@ class SettingsStateNotifier extends StateNotifier<SettingsState> {
 
   void _applyAlertSettings() {
     final alertNotifier = _ref.read(alertStateProvider.notifier);
-    if (!state.alertsEnabled) {
-      // If alerts are disabled, we should stop notifications
-      // but keep monitoring active
-    }
+    alertNotifier.setAlertsEnabled(state.alertsEnabled);
   }
 
   Duration get pollingIntervalDuration => Duration(
@@ -130,7 +137,6 @@ class SettingsStateNotifier extends StateNotifier<SettingsState> {
 }
 
 // Provider
-final settingsStateProvider = StateNotifierProvider<SettingsStateNotifier, SettingsState>((ref) async {
-  final prefs = await SharedPreferences.getInstance();
-  return SettingsStateNotifier(prefs, ref);
+final settingsStateProvider = StateNotifierProvider<SettingsStateNotifier, SettingsState>((ref) {
+  return SettingsStateNotifier(ref);
 });

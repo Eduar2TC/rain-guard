@@ -1,7 +1,6 @@
-import '../../entities/weather_snapshot.dart';
-import '../../entities/precipitation_forecast.dart';
-import '../../enums/rain_intensity.dart';
-import '../../core/constants/alert_thresholds.dart';
+import '../entities/weather_snapshot.dart';
+import '../entities/precipitation_forecast.dart';
+import '../enums/rain_intensity.dart';
 
 class PrecipitationAnalyzer {
   /// Analyze current precipitation conditions
@@ -11,7 +10,6 @@ class PrecipitationAnalyzer {
   }) {
     final currentIntensity = _classifyIntensity(weather.precipitation);
     final forecastAnalysis = _analyzeForecast(forecast);
-    final windAnalysis = _analyzeWind(weather);
 
     return PrecipitationAnalysis(
       currentPrecipitation: weather.precipitation,
@@ -59,17 +57,6 @@ class PrecipitationAnalyzer {
       hasRain: hasRain,
       maxPrecipitation: maxPrecipitation,
       firstRainEta: firstRainEta,
-    );
-  }
-
-  _WindAnalysis _analyzeWind(WeatherSnapshot weather) {
-    // Wind direction in degrees:
-    // 0 = North, 90 = East, 180 = South, 270 = West
-    return _WindAnalysis(
-      speed: weather.windSpeed,
-      direction: weather.windDirection,
-      gust: weather.windGust,
-      isStrong: weather.windSpeed > 30 || weather.windGust > 50,
     );
   }
 
@@ -141,19 +128,5 @@ class _ForecastAnalysis {
     required this.hasRain,
     required this.maxPrecipitation,
     this.firstRainEta,
-  });
-}
-
-class _WindAnalysis {
-  final double speed;
-  final double direction;
-  final double gust;
-  final bool isStrong;
-
-  const _WindAnalysis({
-    required this.speed,
-    required this.direction,
-    required this.gust,
-    required this.isStrong,
   });
 }

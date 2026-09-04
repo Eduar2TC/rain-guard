@@ -1,4 +1,4 @@
-import '../../enums/rain_risk_state.dart';
+import '../enums/rain_risk_state.dart';
 import '../../core/constants/alert_thresholds.dart';
 
 class HysteresisManager {
@@ -6,7 +6,6 @@ class HysteresisManager {
   int _consecutiveRainObservations = 0;
   int _consecutiveNoRainObservations = 0;
 
-  RainRiskState _lastStableState = RainRiskState.idle;
 
   HysteresisManager();
 
@@ -27,7 +26,6 @@ class HysteresisManager {
         return currentState;
       }
 
-      _lastStableState = RainRiskState.raining;
       return RainRiskState.raining;
     }
 
@@ -42,14 +40,12 @@ class HysteresisManager {
         return RainRiskState.raining;
       }
 
-      _lastStableState = newState;
       return newState;
     }
 
     // For other transitions, allow immediately
     _consecutiveRainObservations = 0;
     _consecutiveNoRainObservations = 0;
-    _lastStableState = newState;
     return newState;
   }
 
@@ -84,7 +80,7 @@ class HysteresisManager {
       case RainRiskState.raining:
         return 5;
       case RainRiskState.passed:
-        return 6;
+        return 1;
       case RainRiskState.unknown:
         return -1;
     }
@@ -93,6 +89,5 @@ class HysteresisManager {
   void reset() {
     _consecutiveRainObservations = 0;
     _consecutiveNoRainObservations = 0;
-    _lastStableState = RainRiskState.idle;
   }
 }

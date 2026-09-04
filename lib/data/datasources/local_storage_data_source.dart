@@ -103,6 +103,13 @@ class LocalStorageDataSource {
     return Duration(seconds: seconds);
   }
 
+  Future<DateTime?> getLastUpdateTime() async {
+    final p = await prefs;
+    final lastUpdateStr = p.getString(_keyLastUpdate);
+    if (lastUpdateStr == null) return null;
+    return DateTime.parse(lastUpdateStr);
+  }
+
   // Clear
   Future<void> clearAll() async {
     final p = await prefs;

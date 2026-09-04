@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/entities/rain_arrival_prediction.dart';
@@ -11,8 +9,6 @@ import '../../domain/enums/prediction_confidence.dart';
 import '../../domain/services/rain_arrival_predictor.dart';
 import '../../domain/services/prediction_fusion_engine.dart';
 import '../../domain/services/precipitation_analyzer.dart';
-import 'location_state_provider.dart';
-import 'weather_state_provider.dart';
 
 // Provider for PrecipitationAnalyzer
 final precipitationAnalyzerProvider = Provider<PrecipitationAnalyzer>((ref) {
@@ -92,7 +88,6 @@ class PredictionState {
 // Prediction State Notifier
 class PredictionStateNotifier extends StateNotifier<PredictionState> {
   final PredictionFusionEngine _fusionEngine;
-  Timer? _updateTimer;
 
   PredictionStateNotifier(this._fusionEngine) : super(const PredictionState());
 
@@ -118,33 +113,6 @@ class PredictionStateNotifier extends StateNotifier<PredictionState> {
         error: e.toString(),
       );
     }
-  }
-
-  void startAutoUpdate({
-    required LocationSnapshot location,
-    required WeatherSnapshot weather,
-    required PrecipitationForecast forecast,
-    Duration interval = const Duration(minutes: 1),
-  }) {
-    _updateTimer?.cancel();
-    _updateTimer = Timer.periodic(interval, (_) {
-      updatePrediction(
-        location: location,
-        weather: weather,
-        forecast: forecast,
-      );
-    });
-  }
-
-  void stopAutoUpdate() {
-    _updateTimer?.cancel();
-    _updateTimer = null;
-  }
-
-  @override
-  void dispose() {
-    _updateTimer?.cancel();
-    super.dispose();
   }
 }
 

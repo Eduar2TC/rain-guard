@@ -17,17 +17,17 @@ class AppRouter {
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case home:
+      case '/':
         return MaterialPageRoute(builder: (_) => const HomeScreen());
-      case settings:
+      case '/settings':
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
-      case history:
+      case '/history':
         return MaterialPageRoute(builder: (_) => const HistoryScreen());
-      case debug:
+      case '/debug':
         return MaterialPageRoute(builder: (_) => const DebugScreen());
-      case about:
+      case '/about':
         return MaterialPageRoute(builder: (_) => const AboutScreen());
-      case onboarding:
+      case '/onboarding':
         return MaterialPageRoute(builder: (_) => const OnboardingScreen());
       default:
         return MaterialPageRoute(

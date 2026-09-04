@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../application/state/prediction_state_provider.dart';
 import '../../core/constants/theme.dart';
+import '../../domain/enums/prediction_confidence.dart';
 import '../../domain/enums/rain_risk_state.dart';
 
 class EtaIndicator extends StatelessWidget {
@@ -101,13 +102,13 @@ class EtaIndicator extends StatelessWidget {
               children: [
                 _buildChip(
                   icon: Icons.insights,
-                  label: prediction.confidenceDisplay,
+                  label: prediction.confidence.displayName,
                   color: _getConfidenceColor(prediction.confidence),
                 ),
                 const SizedBox(width: 8),
                 _buildChip(
                   icon: Icons.source,
-                  label: prediction.sourceDisplay,
+                  label: _getSourceDisplay(prediction.source),
                   color: Colors.grey,
                 ),
               ],
@@ -144,7 +145,7 @@ class EtaIndicator extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -161,16 +162,31 @@ class EtaIndicator extends StatelessWidget {
     );
   }
 
-  Color _getConfidenceColor(dynamic confidence) {
+  Color _getConfidenceColor(PredictionConfidence confidence) {
     switch (confidence) {
-      case 'high':
+      case PredictionConfidence.high:
         return Colors.green;
-      case 'medium':
+      case PredictionConfidence.medium:
         return Colors.orange;
-      case 'low':
+      case PredictionConfidence.low:
         return Colors.red;
-      default:
+      case PredictionConfidence.none:
         return Colors.grey;
+    }
+  }
+
+  String _getSourceDisplay(String source) {
+    switch (source) {
+      case 'current_observation':
+        return 'Observación actual';
+      case 'forecast':
+        return 'Pronóstico';
+      case 'radar':
+        return 'Radar';
+      case 'fused':
+        return 'Combinado';
+      default:
+        return 'Desconocido';
     }
   }
 

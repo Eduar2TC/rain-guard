@@ -1,9 +1,8 @@
-import '../../entities/location_snapshot.dart';
-import '../../entities/weather_snapshot.dart';
-import '../../entities/precipitation_forecast.dart';
-import '../../entities/rain_arrival_prediction.dart';
-import '../../enums/rain_risk_state.dart';
-import '../../enums/prediction_confidence.dart';
+import '../entities/location_snapshot.dart';
+import '../entities/weather_snapshot.dart';
+import '../entities/precipitation_forecast.dart';
+import '../entities/rain_arrival_prediction.dart';
+import '../enums/prediction_confidence.dart';
 import 'rain_arrival_predictor.dart';
 
 /// Combines multiple prediction sources to produce a final prediction
@@ -60,7 +59,6 @@ class PredictionFusionEngine {
     // This is safer for cyclist safety
     if (weather.eta != null && radar.eta != null) {
       final earlierEta = weather.eta! < radar.eta! ? weather : radar;
-      final laterEta = weather.eta! < radar.eta! ? radar : weather;
 
       // If predictions are close (within 5 minutes), use the earlier one
       final difference = (weather.eta! - radar.eta!).abs();

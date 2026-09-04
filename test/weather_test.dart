@@ -184,7 +184,10 @@ void main() {
 
       final eta = forecast.firstPrecipitationEta;
       expect(eta, isNotNull);
-      expect(eta!.inMinutes, 15);
+      // Allow for the small amount of time that elapses between creating
+      // `now` and computing the ETA, which can truncate a fraction of a
+      // second off the 15-minute delta.
+      expect(eta!.inSeconds, inInclusiveRange(14 * 60, 15 * 60));
     });
 
     test('maxPrecipitationInNext15Min returns correct value', () {

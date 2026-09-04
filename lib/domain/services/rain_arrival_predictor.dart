@@ -1,11 +1,10 @@
-import '../../entities/location_snapshot.dart';
-import '../../entities/weather_snapshot.dart';
-import '../../entities/precipitation_forecast.dart';
-import '../../entities/rain_arrival_prediction.dart';
-import '../../entities/geo_point.dart';
-import '../../enums/rain_risk_state.dart';
-import '../../enums/rain_intensity.dart';
-import '../../enums/prediction_confidence.dart';
+import '../entities/location_snapshot.dart';
+import '../entities/weather_snapshot.dart';
+import '../entities/precipitation_forecast.dart';
+import '../entities/rain_arrival_prediction.dart';
+import '../enums/rain_risk_state.dart';
+import '../enums/rain_intensity.dart';
+import '../enums/prediction_confidence.dart';
 import '../../core/constants/alert_thresholds.dart';
 import 'precipitation_analyzer.dart';
 
@@ -59,14 +58,25 @@ class RainArrivalPredictor {
       state: state,
       eta: eta,
       distanceMeters: distance,
-      intensity: analysis.forecastMaxPrecipitation > AlertThresholds.moderateRain
-          ? RainIntensity.moderate
-          : RainIntensity.light,
+      intensity: _classifyForecastIntensity(analysis.forecastMaxPrecipitation),
       confidence: confidence,
       direction: _calculateDirection(weather.windDirection),
       source: 'forecast',
       timestamp: DateTime.now(),
     );
+  }
+
+  RainIntensity _classifyForecastIntensity(double maxPrecipitation) {
+    if (maxPrecipitation >= AlertThresholds.extremeRain) {
+      return RainIntensity.extreme;
+    } else if (maxPrecipitation >= AlertThresholds.heavyRain) {
+      return RainIntensity.heavy;
+    } else if (maxPrecipitation >= AlertThresholds.moderateRain) {
+      return RainIntensity.moderate;
+    } else if (maxPrecipitation >= AlertThresholds.lightRain) {
+      return RainIntensity.light;
+    }
+    return RainIntensity.none;
   }
 
   Duration? _calculateEta({

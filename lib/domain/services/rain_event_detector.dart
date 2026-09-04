@@ -1,10 +1,9 @@
 import 'dart:math';
 
-import '../../entities/rain_event.dart';
-import '../../entities/weather_snapshot.dart';
-import '../../entities/geo_point.dart';
-import '../../enums/rain_intensity.dart';
-import '../../enums/prediction_confidence.dart';
+import '../entities/rain_event.dart';
+import '../entities/weather_snapshot.dart';
+import '../entities/geo_point.dart';
+import '../enums/rain_intensity.dart';
 import '../../core/constants/alert_thresholds.dart';
 
 class RainEventDetector {
@@ -65,7 +64,7 @@ class RainEventDetector {
     }
 
     // No rain, no event
-    return RainEventDetection(
+    return const RainEventDetection(
       type: RainEventDetectionType.none,
       event: null,
     );
@@ -87,7 +86,9 @@ class RainEventDetector {
   }
 
   String _generateId() {
-    return 'rain_event_${DateTime.now().millisecondsSinceEpoch}_${Random().nextInt(1000)}';
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final rand = Random.secure().nextInt(0xFFFFFF);
+    return 'rain_event_${now}_$rand';
   }
 
   void reset() {

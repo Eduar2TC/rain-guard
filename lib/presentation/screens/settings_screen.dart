@@ -95,13 +95,13 @@ class SettingsScreen extends ConsumerWidget {
 
           // About section
           _buildSectionHeader('Acerca de'),
-          ListTile(
-            title: const Text('Versión'),
-            subtitle: const Text('1.0.0 MVP'),
+          const ListTile(
+            title: Text('Versión'),
+            subtitle: Text('1.0.0 MVP'),
           ),
-          ListTile(
-            title: const Text('Datos meteorológicos'),
-            subtitle: const Text('Open-Meteo (gratuito)'),
+          const ListTile(
+            title: Text('Datos meteorológicos'),
+            subtitle: Text('Open-Meteo (gratuito)'),
           ),
         ],
       ),
@@ -113,7 +113,7 @@ class SettingsScreen extends ConsumerWidget {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       child: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.bold,
           color: Colors.blue,
@@ -133,19 +133,26 @@ class SettingsScreen extends ConsumerWidget {
         title: const Text('Modo de alerta'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          children: MonitoringMode.values.map((mode) {
-            return RadioListTile<MonitoringMode>(
-              title: Text(mode.displayName),
-              value: mode,
+          children: [
+            RadioGroup<MonitoringMode>(
               groupValue: settings.monitoringMode,
               onChanged: (value) {
                 if (value != null) {
                   ref.read(settingsStateProvider.notifier).setMonitoringMode(value);
+                  Navigator.pop(context);
                 }
-                Navigator.pop(context);
               },
-            );
-          }).toList(),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: MonitoringMode.values.map((mode) {
+                  return RadioListTile<MonitoringMode>(
+                    title: Text(mode.displayName),
+                    value: mode,
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
         ),
       ),
     );
