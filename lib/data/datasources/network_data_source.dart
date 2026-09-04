@@ -7,7 +7,7 @@ enum NetworkType { wifi, mobile, noConnection }
 
 class NetworkDataSource {
   final Connectivity _connectivity;
-  StreamSubscription<ConnectivityResult>? _subscription;
+  StreamSubscription<List<ConnectivityResult>>? _subscription;
   final StreamController<NetworkType> _controller = StreamController<NetworkType>.broadcast();
 
   NetworkDataSource({Connectivity? connectivity})
@@ -21,33 +21,37 @@ class NetworkDataSource {
   bool get isConnected => _currentType != NetworkType.noConnection;
 
   Future<void> init() async {
-    final result = await _connectivity.checkConnectivity();
-    _currentType = _mapConnectivityResult(result);
+    final results = await _connectivity.checkConnectivity();
+    _currentType = _mapConnectivityResult(results);
     _controller.add(_currentType);
 
-    _subscription = _connectivity.onConnectivityChanged.listen((result) {
-      _currentType = _mapConnectivityResult(result);
+    _subscription = _connectivity.onConnectivityChanged.listen((results) {
+      _currentType = _mapConnectivityResult(results);
       _controller.add(_currentType);
     });
   }
 
-  NetworkType _mapConnectivityResult(ConnectivityResult result) {
-    switch (result) {
-      case ConnectivityResult.wifi:
-        return NetworkType.wifi;
-      case ConnectivityResult.mobile:
-        return NetworkType.mobile;
-      case ConnectivityResult.ethernet:
-        return NetworkType.wifi;
-      case ConnectivityResult.bluetooth:
-        return NetworkType.mobile;
-      case ConnectivityResult.vpn:
-        return NetworkType.mobile;
-      case ConnectivityResult.other:
-        return NetworkType.mobile;
-      case ConnectivityResult.none:
-        return NetworkType.noConnection;
+  NetworkType _mapConnectivityResult(List<ConnectivityResult> results) {
+    if (results.isEmpty) return NetworkType.noConnection;
+
+    // Prioritize the most capable connection type present.
+    for (final result in results) {
+      switch (result) {
+        case ConnectivityResult.none:
+          continue;
+        case ConnectivityResult.wifi:
+        case ConnectivityResult.ethernet:
+          return NetworkType.wifi;
+        case ConnectivityResult.mobile:
+        case ConnectivityResult.bluetooth:
+        case ConnectivityResult.vpn:
+        case ConnectivityResult.satellite:
+          return NetworkType.mobile;
+        case ConnectivityResult.other:
+          return NetworkType.mobile;
+      }
     }
+    return NetworkType.noConnection;
   }
 
   Future<bool> hasInternetAccess() async {

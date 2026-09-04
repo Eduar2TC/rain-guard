@@ -1,22 +1,11 @@
 import 'dart:async';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../domain/entities/location_snapshot.dart';
-import '../domain/entities/geo_point.dart';
-import '../domain/enums/movement_state.dart';
-import '../platform/channels/method_channel_service.dart';
-import '../platform/channels/event_channel_service.dart';
-
-// Provider for LocationService
-final locationServiceProvider = Provider<LocationService>((ref) {
-  final methodChannel = ref.watch(methodChannelServiceProvider);
-  final eventChannel = ref.watch(eventChannelServiceProvider);
-  return LocationService(
-    methodChannel: methodChannel,
-    eventChannel: eventChannel,
-  );
-});
+import '../../core/logging/app_logger.dart';
+import '../entities/location_snapshot.dart';
+import '../entities/geo_point.dart';
+import '../enums/movement_state.dart';
+import '../../platform/channels/method_channel_service.dart';
+import '../../platform/channels/event_channel_service.dart';
 
 class LocationService {
   final MethodChannelService _methodChannel;
@@ -72,7 +61,7 @@ class LocationService {
         _locationController.add(location);
       },
       onError: (error) {
-        print('Location updates error: $error');
+        logger.warning(LogTags.location, 'Location updates error: $error');
       },
     );
   }

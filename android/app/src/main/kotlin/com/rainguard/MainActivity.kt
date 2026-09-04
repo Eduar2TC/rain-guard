@@ -109,6 +109,9 @@ class MainActivity : FlutterActivity() {
                 }
 
                 // Overlay
+                "hasOverlayPermission" -> {
+                    result.success(permissionManager.hasOverlayPermission())
+                }
                 "showBubble" -> {
                     if (permissionManager.hasOverlayPermission()) {
                         bubbleManager.show()
@@ -130,7 +133,7 @@ class MainActivity : FlutterActivity() {
                 }
                 "getBubblePosition" -> {
                     val (x, y) = bubbleManager.getPosition()
-                    result.success(hashMapOf("x" to x, "y" to y))
+                    result.success(hashMapOf("x" to x.toDouble(), "y" to y.toDouble()))
                 }
                 "isBubbleVisible" -> {
                     result.success(bubbleManager.isShowing())

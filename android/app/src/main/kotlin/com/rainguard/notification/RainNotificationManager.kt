@@ -18,7 +18,7 @@ import com.rainguard.R
 class RainNotificationManager(private val context: Context) {
 
     companion object {
-        const val MONITORING_NOTIFICATION_ID = 1001
+        const val MONITORING_NOTIFICATION_ID = 1003
         const val ALERT_NOTIFICATION_ID = 1002
     }
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import '../../core/logging/app_logger.dart';
 import '../../domain/entities/location_snapshot.dart';
 import '../../domain/entities/geo_point.dart';
 import '../../platform/channels/method_channel_service.dart';
@@ -41,7 +42,7 @@ class AndroidLocationDataSource {
         _locationController?.add(locationData);
       },
       onError: (error) {
-        print('Location stream error: $error');
+        logger.warning(LogTags.location, 'Location stream error: $error');
       },
     );
   }
@@ -50,15 +51,21 @@ class AndroidLocationDataSource {
     final data = await _methodChannel.getLastKnownLocation();
     if (data == null) return null;
 
+    final lat = (data['latitude'] as num?)?.toDouble();
+    final lon = (data['longitude'] as num?)?.toDouble();
+    if (lat == null || lon == null) return null;
+
     return LocationSnapshot(
       position: GeoPoint(
-        latitude: data['latitude'] as double,
-        longitude: data['longitude'] as double,
+        latitude: lat,
+        longitude: lon,
       ),
-      accuracy: data['accuracy'] as double,
-      speed: data['speed'] as double,
-      bearing: data['bearing'] as double,
-      timestamp: DateTime.fromMillisecondsSinceEpoch(data['timestamp'] as int),
+      accuracy: (data['accuracy'] as num?)?.toDouble() ?? 0.0,
+      speed: (data['speed'] as num?)?.toDouble() ?? 0.0,
+      bearing: (data['bearing'] as num?)?.toDouble() ?? 0.0,
+      timestamp: data['timestamp'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(data['timestamp'] as int)
+          : DateTime.now(),
     );
   }
 

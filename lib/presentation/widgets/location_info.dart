@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../application/state/location_state_provider.dart';
 
-class LocationInfo extends StatelessWidget {
-  final LocationState locationState;
-  final VoidCallback? onRequestPermission;
-
-  const LocationInfo({
-    super.key,
-    required this.locationState,
-    this.onRequestPermission,
-  });
+class LocationInfo extends ConsumerWidget {
+  const LocationInfo({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final locationState = ref.watch(locationStateProvider);
+    void onRequestPermission() =>
+        ref.read(locationStateProvider.notifier).requestPermission();
+
     if (locationState.isLoading) {
       return const Card(
         child: Padding(

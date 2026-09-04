@@ -149,6 +149,13 @@ void main() {
         isPaused: false,
       );
 
+      // RAINING requires one confirmation cycle, so the first observation is
+      // suppressed by hysteresis and the decision is produced on the second.
+      engine.evaluate(
+        prediction: prediction,
+        currentState: currentState,
+      );
+
       final decision = engine.evaluate(
         prediction: prediction,
         currentState: currentState,
@@ -254,19 +261,28 @@ void main() {
     });
 
     test('reset clears state', () {
-      hysteresis.processStateChange(
+      // Reach RAINING after the required confirmation cycles
+      final first = hysteresis.processStateChange(
         currentState: RainRiskState.warning,
         newState: RainRiskState.raining,
       );
+      expect(first, RainRiskState.warning); // needs one more confirmation
+
+      final second = hysteresis.processStateChange(
+        currentState: RainRiskState.warning,
+        newState: RainRiskState.raining,
+      );
+      expect(second, RainRiskState.raining);
 
       hysteresis.reset();
 
-      // After reset, should allow immediate change
+      // After reset, the confirmation counter is cleared, so a single
+      // observation is no longer enough to enter RAINING immediately.
       final result = hysteresis.processStateChange(
         currentState: RainRiskState.warning,
         newState: RainRiskState.raining,
       );
-      expect(result, RainRiskState.raining);
+      expect(result, RainRiskState.warning);
     });
   });
 

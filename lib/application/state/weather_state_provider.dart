@@ -14,7 +14,9 @@ import 'providers.dart';
 
 // Providers for data sources
 final weatherDataSourceProvider = Provider<WeatherDataSource>((ref) {
-  return WeatherDataSource();
+  final dataSource = WeatherDataSource();
+  ref.onDispose(dataSource.dispose);
+  return dataSource;
 });
 
 final localStorageDataSourceProvider = Provider<LocalStorageDataSource>((ref) {

@@ -32,7 +32,7 @@ class RainMonitorForegroundService : Service() {
 
         // Polling intervals (milliseconds)
         private const val NORMAL_POLLING = 300_000L // 5 min
-        private const val WATCH_POLLING = 300_000L // 5 min
+        private const val WATCH_POLLING = 240_000L // 4 min
         private const val APPROACHING_POLLING = 180_000L // 3 min
         private const val WARNING_POLLING = 90_000L // 1.5 min
         private const val RAINING_POLLING = 180_000L // 3 min
@@ -165,9 +165,9 @@ class RainMonitorForegroundService : Service() {
             val weatherData = weatherBridge.fetchWeather(currentLat, currentLon)
             if (weatherData != null) {
                 lastPrecipitation = weatherData.precipitation
+                lastEtaMinutes = weatherData.precipitationEtaMinutes ?: -1
                 updateState()
                 updateNotificationBasedOnState()
-                sendStateToFlutter()
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error fetching weather", e)
@@ -229,17 +229,7 @@ class RainMonitorForegroundService : Service() {
     }
 
     private fun sendStateToFlutter() {
-        val intent = Intent("com.rainguard.STATE_UPDATE").apply {
-            putExtra("state", currentState)
-            putExtra("latitude", currentLat)
-            putExtra("longitude", currentLon)
-            putExtra("speed", currentSpeed)
-            putExtra("bearing", currentBearing)
-            putExtra("accuracy", currentAccuracy)
-            putExtra("precipitation", lastPrecipitation)
-            putExtra("etaMinutes", lastEtaMinutes)
-        }
-        sendBroadcast(intent)
+        Log.d(TAG, "State: $currentState (eta=$lastEtaMinutes min, precip=$lastPrecipitation)")
     }
 
     private fun createNotification(contentText: String): Notification {
@@ -299,11 +289,12 @@ class RainMonitorForegroundService : Service() {
 
     private fun acquireWakeLock() {
         val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+        wakeLock?.let { if (it.isHeld) it.release() }
         wakeLock = powerManager.newWakeLock(
             PowerManager.PARTIAL_WAKE_LOCK,
             "RainGuard::MonitoringWakeLock"
         ).apply {
-            acquire(60 * 60 * 1000L) // 1 hour max
+            acquire() // No timeout - released on stop/destroy
         }
     }
 

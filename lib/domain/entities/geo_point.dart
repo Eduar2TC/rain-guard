@@ -78,7 +78,7 @@ class GeoPoint {
           longitude == other.longitude;
 
   @override
-  int get hashCode => latitude.hashCode ^ longitude.hashCode;
+  int get hashCode => Object.hash(latitude, longitude);
 
   @override
   String toString() => 'GeoPoint($latitude, $longitude)';

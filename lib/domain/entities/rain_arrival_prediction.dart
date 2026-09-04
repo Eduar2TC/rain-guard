@@ -25,7 +25,7 @@ class RainArrivalPrediction {
 
   int? get etaMinutes => eta?.inMinutes;
 
-  bool get hasValidEta => eta != null && eta!.inSeconds > 0;
+  bool get hasValidEta => eta != null && eta!.inSeconds >= 0;
 
   String get etaDisplay {
     if (!hasValidEta) return '--';

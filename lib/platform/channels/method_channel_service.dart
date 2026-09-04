@@ -10,6 +10,8 @@ class MethodChannelService {
   Function()? onBubbleLongPress;
   Function(Map<String, dynamic>)? onBubblePositionChanged;
   Function(Map<String, dynamic>)? onBatteryChanged;
+  Future<bool> Function()? onRequestOverlayPermission;
+  Function(bool)? onOverlayPermissionResult;
 
   MethodChannelService({this.onSettingsChanged, this.onLocationUpdate, this.onAlert}) {
     _channel.setMethodCallHandler(_handleMethodCall);
@@ -46,7 +48,9 @@ class MethodChannelService {
         }
         break;
       case 'onOverlayPermissionResult':
-        // Handle overlay permission result
+        if (onOverlayPermissionResult != null) {
+          onOverlayPermissionResult!(call.arguments == true);
+        }
         break;
       case 'onLocationPermissionResult':
         // Handle location permission result
@@ -143,6 +147,11 @@ class MethodChannelService {
   // Permissions
   Future<bool> requestOverlayPermission() async {
     final result = await _channel.invokeMethod('requestOverlayPermission');
+    return result == true;
+  }
+
+  Future<bool> hasOverlayPermission() async {
+    final result = await _channel.invokeMethod('hasOverlayPermission');
     return result == true;
   }
 

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../application/state/location_state_provider.dart';
-import '../../application/state/weather_state_provider.dart';
-import '../../application/state/prediction_state_provider.dart';
 import '../../application/state/alert_state_provider.dart';
 import '../../application/state/monitoring_service_provider.dart';
 import '../../domain/enums/rain_risk_state.dart';
@@ -23,9 +20,6 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final locationState = ref.watch(locationStateProvider);
-    final weatherState = ref.watch(weatherStateProvider);
-    final predictionState = ref.watch(predictionStateProvider);
     final alertState = ref.watch(alertStateProvider);
     final monitoringState = ref.watch(monitoringServiceProvider);
 
@@ -89,24 +83,19 @@ class HomeScreen extends ConsumerWidget {
               const SizedBox(height: 24),
 
               // Location Info
-              LocationInfo(
-                locationState: locationState,
-                onRequestPermission: () {
-                  ref.read(locationStateProvider.notifier).requestPermission();
-                },
-              ),
+              const LocationInfo(),
               const SizedBox(height: 16),
 
               // ETA Indicator (Prediction) - Main focus
-              Expanded(
+              const Expanded(
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      EtaIndicator(predictionState: predictionState),
-                      const SizedBox(height: 16),
-                      WeatherSummary(weatherState: weatherState),
-                      const SizedBox(height: 16),
-                      const BatteryStatusCard(),
+                      EtaIndicator(),
+                      SizedBox(height: 16),
+                      WeatherSummary(),
+                      SizedBox(height: 16),
+                      BatteryStatusCard(),
                     ],
                   ),
                 ),

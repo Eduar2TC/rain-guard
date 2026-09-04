@@ -1,4 +1,4 @@
-import '../../enums/rain_risk_state.dart';
+import '../enums/rain_risk_state.dart';
 
 class AntiSpamManager {
   // Track last alert time for each state

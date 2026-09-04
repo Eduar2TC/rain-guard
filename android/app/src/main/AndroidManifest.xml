@@ -27,7 +27,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:name="${applicationName}"
+        android:name=".RainGuardApplication"
         android:label="RainGuard"
         android:icon="@mipmap/ic_launcher">
 

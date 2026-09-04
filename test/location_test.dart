@@ -38,7 +38,7 @@ void main() {
       final stopped = LocationSnapshot(
         position: const GeoPoint(latitude: 0, longitude: 0),
         accuracy: 10.0,
-        speed: 0.5, // < 1 km/h
+        speed: 0.2, // < 1 km/h (0.72 km/h)
         bearing: 0,
         timestamp: DateTime.now(),
       );

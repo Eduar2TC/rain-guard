@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../application/state/alert_state_provider.dart';
 import '../../domain/entities/rain_event.dart';
-import '../../core/constants/theme.dart';
 
 class HistoryScreen extends ConsumerWidget {
   const HistoryScreen({super.key});
