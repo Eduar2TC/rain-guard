@@ -12,7 +12,6 @@ import io.flutter.plugin.common.EventChannel
 import com.rainguard.location.LocationManager
 import com.rainguard.permissions.PermissionManager
 import com.rainguard.notification.RainNotificationManager
-import com.rainguard.overlay.RainBubbleManager
 import com.rainguard.battery.BatteryMonitor
 import com.rainguard.service.RainMonitorForegroundService
 
@@ -29,7 +28,6 @@ class MainActivity : FlutterActivity() {
     private lateinit var locationManager: LocationManager
     private lateinit var permissionManager: PermissionManager
     private lateinit var notificationManager: RainNotificationManager
-    private lateinit var bubbleManager: RainBubbleManager
     private lateinit var batteryMonitor: BatteryMonitor
 
     private var locationEventSink: EventChannel.EventSink? = null
@@ -41,7 +39,6 @@ class MainActivity : FlutterActivity() {
         locationManager = LocationManager(this)
         permissionManager = PermissionManager(this)
         notificationManager = RainNotificationManager(this)
-        bubbleManager = RainBubbleManager(this)
         batteryMonitor = BatteryMonitor(this)
 
         methodChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, METHOD_CHANNEL)
@@ -50,7 +47,6 @@ class MainActivity : FlutterActivity() {
 
         setupMethodChannel()
         setupEventChannels()
-        setupBubbleCallbacks()
         setupBatteryMonitor()
     }
 
@@ -114,34 +110,33 @@ class MainActivity : FlutterActivity() {
                 }
                 "showBubble" -> {
                     if (permissionManager.hasOverlayPermission()) {
-                        bubbleManager.show()
-                        bubbleManager.restorePosition()
+                        val intent = Intent(this, RainMonitorForegroundService::class.java).apply {
+                            action = "com.rainguard.ACTION_ENABLE_BUBBLE"
+                        }
+                        startService(intent)
                         result.success(true)
                     } else {
                         result.success(false)
                     }
                 }
                 "hideBubble" -> {
-                    bubbleManager.hide()
+                    val intent = Intent(this, RainMonitorForegroundService::class.java).apply {
+                        action = "com.rainguard.ACTION_DISABLE_BUBBLE"
+                    }
+                    startService(intent)
                     result.success(true)
                 }
                 "setBubblePosition" -> {
-                    val x = call.argument<Int>("x") ?: 0
-                    val y = call.argument<Int>("y") ?: 0
-                    bubbleManager.setPosition(x, y)
                     result.success(true)
                 }
                 "getBubblePosition" -> {
-                    val (x, y) = bubbleManager.getPosition()
-                    result.success(hashMapOf("x" to x.toDouble(), "y" to y.toDouble()))
+                    result.success(hashMapOf("x" to 0.0, "y" to 0.0))
                 }
                 "isBubbleVisible" -> {
-                    result.success(bubbleManager.isShowing())
+                    result.success(false) // Bubble now owned by foreground service
                 }
                 "updateBubbleState" -> {
-                    val state = call.argument<String>("state") ?: "idle"
-                    val etaMinutes = call.argument<Int>("etaMinutes")
-                    bubbleManager.updateState(state, etaMinutes)
+                    // Bubble state is now driven natively by the foreground service
                     result.success(true)
                 }
 
@@ -238,23 +233,6 @@ class MainActivity : FlutterActivity() {
         })
     }
 
-    private fun setupBubbleCallbacks() {
-        bubbleManager.onTap = {
-            val intent = Intent(this, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-            }
-            startActivity(intent)
-        }
-
-        bubbleManager.onLongPress = {
-            methodChannel.invokeMethod("onBubbleLongPress", null)
-        }
-
-        bubbleManager.onPositionChanged = { x, y ->
-            methodChannel.invokeMethod("onBubblePositionChanged", hashMapOf("x" to x, "y" to y))
-        }
-    }
-
     private fun setupBatteryMonitor() {
         batteryMonitor.startListening { batteryInfo ->
             runOnUiThread {
@@ -338,7 +316,6 @@ class MainActivity : FlutterActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        bubbleManager.hide()
         batteryMonitor.stopListening()
     }
 }

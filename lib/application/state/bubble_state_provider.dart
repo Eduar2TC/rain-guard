@@ -114,14 +114,6 @@ class BubbleStateNotifier extends StateNotifier<BubbleState> {
     state = state.copyWith(isVisible: false);
   }
 
-  Future<void> toggle() async {
-    if (state.isVisible) {
-      await hide();
-    } else {
-      await show();
-    }
-  }
-
   Future<void> updateState(RainRiskState riskState, int? etaMinutes) async {
     final stateName = riskState.name;
     await _methodChannel.updateBubbleState(stateName, etaMinutes);

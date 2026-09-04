@@ -8,12 +8,11 @@ import 'package:rain_guard/presentation/widgets/location_info.dart';
 import 'package:rain_guard/presentation/widgets/weather_summary.dart';
 import 'package:rain_guard/presentation/widgets/eta_indicator.dart';
 import 'package:rain_guard/presentation/widgets/monitoring_toggle.dart';
-import 'package:rain_guard/presentation/widgets/bubble_preview.dart';
 import 'package:rain_guard/presentation/widgets/battery_status_card.dart';
-import 'debug_screen.dart';
-import 'settings_screen.dart';
-import 'history_screen.dart';
-import 'about_screen.dart';
+import 'package:rain_guard/presentation/screens/debug_screen.dart';
+import 'package:rain_guard/presentation/screens/settings_screen.dart';
+import 'package:rain_guard/presentation/screens/history_screen.dart';
+import 'package:rain_guard/presentation/screens/about_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -156,9 +155,6 @@ class HomeScreen extends ConsumerWidget {
               ),
 
               const SizedBox(height: 16),
-
-              // Bubble Toggle
-              const BubblePreview(),
             ],
           ),
         ),
